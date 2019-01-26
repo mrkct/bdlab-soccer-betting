@@ -11,9 +11,9 @@
         <div class="container">
             <?php require_once(COMPONENTS . '/navbar.php'); ?>
             <div class="container">
-                <h1 class="title is-1 title-centered">Error 404</h1>
+                <h1 class="title is-1 title-centered">Error 404 - Not Found</h1>
                 <p class="paragraph title-centered">
-                    This page does not exists
+                    This page does not exists or might have been moved.
                 </p>
             </div>
         </div>
