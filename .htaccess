@@ -1,0 +1,7 @@
+Test.
+
+RewriteEngine on
+RewriteBase /
+RewriteRule ^(login)/?$ php/login.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(article)/(\d*)/([\w-]*)/?$ prova.php?id=$2&slug=$3
