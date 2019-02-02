@@ -14,13 +14,13 @@
         $id = isset($_POST['id']) && !empty($_POST['id'])? $_POST['id'] : NULL;
         $bday = isset($_POST['birthday']) && !empty($_POST['birthday']) ? $_POST['birthday'] : NULL;
         $height = isset($_POST['height']) && !empty($_POST['height']) ? $_POST['height']: NULL;
-        $weight = isset($_POST['weight']) && !empty($_POST['weigth']) ? $_POST['weight'] : NULL;
+        $weight = isset($_POST['weight']) && !empty($_POST['weight']) ? $_POST['weight'] : NULL;
         
         if( $id == NULL ){
             pg_prepare(
                 $db,
                 'insert_player',
-                'INSERT INTO player(name, birthday, height, weigth) VALUES ($1, $2, $3, $4);'
+                'INSERT INTO player(name, birthday, height, weight) VALUES ($1, $2, $3, $4);'
             );
             $result = pg_execute($db, 'insert_player', array($name, $bday, $height, $weight));
             $success = true;
@@ -35,7 +35,7 @@
                 pg_prepare(
                     $db,
                     'insert_player',
-                    'INSERT INTO player(id, name, birthday, height, weigth) VALUES ($1, $2, $3, $4, $5);'
+                    'INSERT INTO player(id, name, birthday, height, weight) VALUES ($1, $2, $3, $4, $5);'
                 );
                 $result = pg_execute($db, 'insert_player', array($id, $name, $bday, $height, $weight));
                 $success = true;
@@ -87,7 +87,7 @@
                         <div class="field">
                             <label class="label">Player's Weight (optional)</label>
                             <div class="control">
-                                <input class="input" name="weigth" type="numeric" />
+                                <input class="input" name="weight" type="numeric" />
                             </div>
                         </div>
                         <div class="field">

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS player(
     name VARCHAR(255) NOT NULL,
     birthday DATE,
     height DOUBLE PRECISION,
-    weigth DOUBLE PRECISION
+    weight DOUBLE PRECISION
 );
 
 CREATE TABLE IF NOT EXISTS stats(
