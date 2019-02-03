@@ -15,17 +15,22 @@ class League{
         if( !$prepared ){
             pg_prepare(
                 $db,
-                'find_league_name',
+                'League_findByName',
                 'SELECT id, name, country FROM league WHERE name = $1;'
             );
             pg_prepare(
                 $db,
-                'find_league_id',
+                'League_findById',
                 'SELECT id, name, country FROM league WHERE id = $1;'
             );
             pg_prepare(
                 $db,
-                'insert_league',
+                'League_findByNameAndCountry',
+                'SELECT id, name, country FROM league WHERE name = $1 AND country = $2;'
+            );
+            pg_prepare(
+                $db,
+                'League_insert',
                 'INSERT INTO league(name, country) VALUES ($1, $2) RETURNING id, name, country;'
             );
             $prepared = true;
@@ -38,7 +43,7 @@ class League{
      * exception if an error occurs
      */
     public static function findById($db, $id){
-        $result = @pg_execute($db, 'find_league_id', array($id));
+        $result = @pg_execute($db, 'League_findById', array($id));
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
@@ -56,7 +61,20 @@ class League{
      * exception if an error occurs
      */
     public static function findByName($db, $name){
-        $result = @pg_execute($db, 'find_league_name', array($name));
+        $result = @pg_execute($db, 'League_findByName', array($name));
+        if( !$result ){
+            throw new DBException(pg_last_error($db));
+        }
+
+        if( ($row = pg_fetch_assoc($result)) != false ){
+            return $row;
+        } else {
+            return NULL;
+        }
+    }
+
+    public static function findByNameAndCountry($db, $name, $country){
+        $result = @pg_execute($db, 'League_findByNameAndCountry', array($name, $country));
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
@@ -77,7 +95,7 @@ class League{
     public static function insert($db, $name, $country){
         $result = @pg_execute(
             $db, 
-            'insert_league', 
+            'League_insert', 
             array($name, $country)
         );
         if( !$result ){
