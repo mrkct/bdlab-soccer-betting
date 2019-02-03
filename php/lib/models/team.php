@@ -3,7 +3,13 @@ require_once(LIB . '/database.php');
 require_once('dbexception.php');
 require_once('config.php');
 
+
 class Team{
+    /**
+     * Prepares the queries for the other functions. This needs
+     * to be called first, before any other method. This has effect only
+     * the first time it is called.
+     */
     public static function prepare($db){
         static $prepared = false;
         if( !$prepared ){
