@@ -21,7 +21,7 @@ class Team{
             pg_prepare(
                 $db, 
                 'insert_team',
-                'INSERT INTO team(id, shortname, longname) VALUES ($1, $2, $3)'
+                'INSERT INTO team(id, shortname, longname) VALUES ($1, $2, $3) RETURNING id, shortname, longname;'
             );
             $prepared = true;
         }
@@ -46,8 +46,9 @@ class Team{
 
     /**
      * Inserts a team in the database.
-     * Returns true if success, raises an exception if
-     * an error occurs.
+     * Returns the inserted team if success, NULL if the database does
+     * not support the RETURNING construct and can't return after an INSERT.
+     * Raises an exception if an error occurs.
      */
     public static function insert($db, $id, $shortname, $longname){
         $result = @pg_execute($db, 'insert_team', array($id, $shortname, $longname));
@@ -55,6 +56,10 @@ class Team{
             throw new DBException(pg_last_error($db));
         }
 
-        return true;
+        if( ($row = pg_fetch_assoc($result)) != false ){
+            return $row;
+        } else {
+            return NULL;
+        }
     }
 }

@@ -21,7 +21,7 @@ class Player{
             pg_prepare(
                 $db,
                 'insert_player',
-                'INSERT INTO player(id, name, birthday, height, weight) VALUES ($1, $2, $3, $4, $5);'
+                'INSERT INTO player(id, name, birthday, height, weight) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, birthday, height, weight;'
             );
             $prepared = true;
         }
@@ -46,8 +46,9 @@ class Player{
 
     /**
      * Inserts a player in the database.
-     * Returns true if success, raises an exception if
-     * an error occurs.
+     * Returns the inserted player if success, NULL if the database does
+     * not support the RETURNING construct and can't return after an INSERT.
+     * Raises an exception if an error occurs.
      */
     public static function insert($db, $id, $name, $birthday, $height, $weight){
         $result = @pg_execute(
@@ -59,6 +60,10 @@ class Player{
             throw new DBException(pg_last_error($db));
         }
 
-        return true;
+        if( ($row = pg_fetch_assoc($result)) != false ){
+            return $row;
+        } else {
+            return NULL;
+        }
     }
 }
