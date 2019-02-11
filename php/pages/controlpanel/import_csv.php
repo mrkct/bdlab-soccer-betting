@@ -28,11 +28,15 @@
                 case TYPE_MATCH:
                     require_once(LIB . '/csv_import/import_match.php');
                     $result = match_import_csv($file, $db);
-                    $counted_rows = $result["total_rows"];
-                    $error_rows = $result["error_rows"];
-                    $error_log = $result["error_log"];
+                    break;
+                case TYPE_STATS:
+                    require_once(LIB . '/csv_import/import_stats.php');
+                    $result = stats_import_csv($file, $db);
                     break;
             }
+            $counted_rows = $result["total_rows"];
+            $error_rows = $result["error_rows"];
+            $error_log = $result["error_log"];
         }
     }
 ?>
@@ -63,7 +67,7 @@
                         <br>
                         <label class="radio">
                             <input type="radio" name="type" value="<?php echo TYPE_STATS; ?>" />
-                            Player's Stats (player.csv)
+                            Player's Stats (player_attribute.csv)
                         </label>
                         <input class="input button is-link" type="submit" value="Import data" />
                     </form>
