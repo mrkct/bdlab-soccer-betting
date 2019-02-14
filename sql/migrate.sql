@@ -149,12 +149,11 @@ CREATE TABLE IF NOT EXISTS played(
 CREATE TABLE IF NOT EXISTS quote(
     match INTEGER REFERENCES match(id),
     bet_provider VARCHAR(5) REFERENCES bet_provider(id),
-    result CHAR NOT NULL,
     home_quote DOUBLE PRECISION NOT NULL,
     draw_quote DOUBLE PRECISION NOT NULL,
     away_quote DOUBLE PRECISION NOT NULL,
     created_by INTEGER NOT NULL REFERENCES collaborator(id),
-    PRIMARY KEY(match, bet_provider)
+    PRIMARY KEY(match, bet_provider),
 );
 
 COMMIT;
