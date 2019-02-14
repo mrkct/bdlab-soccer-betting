@@ -17,10 +17,10 @@ function valid_values($value, $accepted){
 }
 
 /**
- * Takes an array representing a CSV stats row and returns
- * an array with invalid values set to null
+ * Converts a CSV row array into an associative array.
+ * $row: The CSV row array
  */
-function stats_filter_row($row){
+function stats_read_row($row){
     $stats = array(
         "player"                => empty($row[0])? NULL : $row[0],
         "attribute_date"        => empty($row[1])? NULL : $row[1],
@@ -75,6 +75,13 @@ function stats_filter_row($row){
     return $stats;
 }
 
+/**
+ * Inserts stats for a single player in a single date
+ * in the db.
+ * $db: A database connection
+ * $stats: An associative array in the format specified by
+ * the function 'stats_read_row' above
+ */
 function stats_insert($db, $stats){
     Stats::prepare($db);
     if( Stats::find($db, $stats['player'], $stats['attribute_date']) == NULL ){
@@ -126,14 +133,19 @@ function stats_insert($db, $stats){
     return true;
 }
 
-function stats_import_csv($file, $db){
+/**
+ * Imports a csv with the player_attribute.csv format.
+ * $file: A file handler, for example the result of fopen
+ * $db: A connection handler to the database
+ */
+function stats_import($file, $db){
     $counted_rows = 0;
     $error_rows = 0;
     $error_log = array();
     
     fgetcsv($file, 0, ","); // To skip the heading line
     while($row = fgetcsv($file, 0, ",")){
-        $stats = stats_filter_row($row);
+        $stats = stats_read_row($row);
         try{
             $counted_rows++;
             stats_insert($db, $stats);

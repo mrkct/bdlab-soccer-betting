@@ -12,7 +12,7 @@ require_once(LIB . '/csv_import/InvalidDataException.php');
  * a map with easier to access data and all invalid data
  * set to NULL
  */
-function match_filter_row($row){
+function match_read_row($row){
     $filtered = array(
         "id" => $row[0],
         "country" => $row[1],
@@ -68,7 +68,7 @@ function match_filter_row($row){
 /**
  * Given a filtered row inserts all related data in the db
  */
-function match_insert_row($db, $row){
+function match_insert($db, $row){
     Team::prepare($db);
     $hometeam = Team::find($db, $row["home_team"]["id"]);
     if( $hometeam == NULL ){
@@ -171,17 +171,17 @@ function match_insert_row($db, $row){
  * $file: A file handler, for example the result of fopen
  * $db: A connection handler to the database
  */
-function match_import_csv($file, $db){
+function match_import($file, $db){
     $counted_rows = 0;
     $error_rows = 0;
     $error_log = array();
     
     fgetcsv($file, 0, ","); // To skip the heading line
     while($row = fgetcsv($file, 0, ",")){
-        $row = match_filter_row($row);
+        $row = match_read_row($row);
         try{
             $counted_rows++;
-            match_insert_row($db, $row);
+            match_insert($db, $row);
         }catch(InvalidDataException $e){
             $error_rows++;
             array_push($error_log, array(

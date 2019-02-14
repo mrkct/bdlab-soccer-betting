@@ -27,11 +27,11 @@
             switch($_POST["type"]){
                 case TYPE_MATCH:
                     require_once(LIB . '/csv_import/import_match.php');
-                    $result = match_import_csv($file, $db);
+                    $result = match_import($file, $db);
                     break;
                 case TYPE_STATS:
                     require_once(LIB . '/csv_import/import_stats.php');
-                    $result = stats_import_csv($file, $db);
+                    $result = stats_import($file, $db);
                     break;
                 case TYPE_BET:
                     require_once(LIB . '/csv_import/import_bet.php');
