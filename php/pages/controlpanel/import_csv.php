@@ -33,6 +33,21 @@
                     require_once(LIB . '/csv_import/import_stats.php');
                     $result = stats_import_csv($file, $db);
                     break;
+                case TYPE_BET:
+                    require_once(LIB . '/csv_import/import_bet.php');
+                    $result = bet_import($file, $db);
+                    break;
+                default:
+                    $result = array(
+                        "total_rows" => 1,
+                        "error_rows" => 1,
+                        "error_log" => array(
+                            0 => array(
+                                "line" => 1,
+                                "message" => "Unknown import option provided"
+                            )
+                        )
+                    );
             }
             $counted_rows = $result["total_rows"];
             $error_rows = $result["error_rows"];
