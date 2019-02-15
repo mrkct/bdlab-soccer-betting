@@ -15,12 +15,12 @@ class Team{
         if( !$prepared ){
             pg_prepare(
                 $db,
-                'find_team',
+                'Team_find',
                 'SELECT id, shortname, longname FROM team WHERE id = $1'
             );
             pg_prepare(
                 $db, 
-                'insert_team',
+                'Team_insert',
                 'INSERT INTO team(id, shortname, longname) VALUES ($1, $2, $3) RETURNING id, shortname, longname;'
             );
             $prepared = true;
@@ -32,7 +32,7 @@ class Team{
      * exception if an error occurs
      */
     public static function find($db, $id){
-        $result = @pg_execute($db, 'find_team', array($id));
+        $result = @pg_execute($db, 'Team_find', array($id));
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
@@ -51,7 +51,7 @@ class Team{
      * Raises an exception if an error occurs.
      */
     public static function insert($db, $id, $shortname, $longname){
-        $result = @pg_execute($db, 'insert_team', array($id, $shortname, $longname));
+        $result = @pg_execute($db, 'Team_insert', array($id, $shortname, $longname));
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
