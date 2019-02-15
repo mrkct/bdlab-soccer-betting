@@ -15,12 +15,12 @@ class Country{
         if( !$prepared ){
             pg_prepare(
                 $db,
-                'find_country_iso3',
+                'Country_findByISO3',
                 'SELECT iso3, name FROM country WHERE iso3 = $1;'
             );
             pg_prepare(
                 $db,
-                'find_country_name',
+                'Country_findByName',
                 'SELECT iso3, name FROM country WHERE name = $1;'
             );
             $prepared = true;
@@ -33,7 +33,7 @@ class Country{
      * if an error occurs
      */
     public static function findByISO3($db, $iso3){
-        $result = @pg_execute($db, 'find_country_iso3', array($iso3));
+        $result = @pg_execute($db, 'Country_findByISO3', array($iso3));
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }

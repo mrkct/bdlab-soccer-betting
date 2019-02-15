@@ -16,7 +16,7 @@ class Match{
         if( !$prepared ){
             pg_prepare(
                 $db,
-                'find_match',
+                'Match_find',
                 'SELECT 
                     id, 
                     league, 
@@ -33,7 +33,7 @@ class Match{
             );
             pg_prepare(
                 $db, 
-                'insert_match',
+                'Match_insert',
                 'INSERT INTO match(
                     id, 
                     league, 
@@ -78,7 +78,7 @@ class Match{
      * exception if an error occurs
      */
     public static function find($db, $id){
-        $result = @pg_execute($db, 'find_match', array($id));
+        $result = @pg_execute($db, 'Match_find', array($id));
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
@@ -98,7 +98,7 @@ class Match{
      */
     public static function insert($db, $id, $league, $season, $stage, $played_on, $hometeam,
                                   $awayteam, $hometeam_goals, $awayteam_goals, $created_by){
-        $result = @pg_execute($db, 'insert_match', array(
+        $result = @pg_execute($db, 'Match_insert', array(
             $id,
             $league,
             $season,
