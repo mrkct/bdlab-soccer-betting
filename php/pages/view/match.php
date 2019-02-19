@@ -137,9 +137,9 @@
                 <table class="table is-striped is-bordered is-hoverable is-fullwidth">
                     <thead>
                         <th>Bet Provider</th>
-                        <th>Home team wins</th>
+                        <th>Home team(<?php echo $hometeam["shortname"]; ?>) wins</th>
                         <th>Match ends in draw</th>
-                        <th>Away team wins</th>
+                        <th>Away team(<?php echo $awayteam["shortname"]; ?>) wins</th>
                     </thead>
                     <tbody>
                         <?php
@@ -276,6 +276,7 @@
                     <td><?php echo $player["stats"]["sliding_tackle"]; ?></td>
                     <td><?php echo $player["stats"]["gk_diving"]; ?></td>
                     <td><?php echo $player["stats"]["gk_handling"]; ?></td>
+                    <td><?php echo $player["stats"]["gk_kicking"]; ?></td>
                     <td><?php echo $player["stats"]["gk_positioning"]; ?></td>
                     <td><?php echo $player["stats"]["gk_reflexes"]; ?></td>
         <?php
