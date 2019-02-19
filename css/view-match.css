@@ -1,0 +1,51 @@
+.match-result-stats > table{
+    display: block;
+    overflow: auto;
+}
+.match-info{
+    text-align: center;
+}
+.league-name{
+    margin-top: 24px;
+    font-size: 18px;
+}
+.match-date{
+    font-size: 14px;
+    color: #5d6571;
+    margin-top: 9px;
+}
+
+.match-teams{
+    line-height: 80px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.match-team{
+    font-size: 24px;
+    text-align: center;
+}
+
+.match-team-vs-line{
+    width: 48px;
+    height: 1px;
+    background-color: silver;
+    display: inline-block;
+    vertical-align: middle;
+}
+.match-result-value{
+    font-size: 24px;
+    color: black;
+    display: inline-block;
+}
+.match-team-vs-circle{
+    display: inline-block;
+    border: 1px solid silver;
+    border-radius: 48px;
+    background-color: #f2f2f2;
+    width: 56px;
+    height: 56px;
+    line-height: 54px;
+    text-align: center;
+}
