@@ -49,45 +49,10 @@
                     endwhile;
                 ?>
             </div>
-            <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-                <?php 
-                    if( $page > 1 ): ?>
-                        <a href="?pagesize=<?php echo $pagesize; ?>&page=<?php echo $page-1; ?>" class="pagination-previous">Previous</a>
-                <?php endif; ?>
-                <?php
-                    if( $page < $total_pages ): ?>
-                        <a href="?pagesize=<?php echo $pagesize; ?>&page=<?php echo $page+1; ?>"class="pagination-next">Next page</a>
-                <?php endif; ?>
-
-                <ul class="pagination-list">
-                    <?php
-                        if( $page > 2 ): ?>
-                            <li><a href="?pagesize=<?php echo $pagesize; ?>&page=1" class="pagination-link" aria-label="Goto page 1">1</a></li>
-                            <li><span class="pagination-ellipsis">&hellip;</span></li>
-                    <?php endif; ?>
-                    <?php
-                        for($i = $page-1; $i < $page+2; $i++): 
-                            if( $i > 0 && $i <= $total_pages ): ?>
-                            <li>
-                                <a href="?pagesize=<?php echo $pagesize; ?>&page=<?php echo $i; ?>" class="pagination-link <?php echo $i == $page? "is-current": ""; ?>" aria-label="Page <?php echo $i; ?>" aria-current="page">
-                                    <?php echo $i; ?>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    <?php endfor; ?>
-                    <?php
-                        if( $page < $total_pages-1 ): ?>
-                            <li>
-                                <span class="pagination-ellipsis">&hellip;</span>
-                            </li>
-                            <li>
-                                <a href="?pagesize=<?php echo $pagesize; ?>&page=<?php echo $total_pages; ?>" class="pagination-link" aria-label="Goto page <?php echo $total_pages; ?>">
-                                    <?php echo $total_pages; ?>
-                                </a>
-                            </li>
-                    <?php endif; ?>
-                </ul>
-            </nav>
+            <?php
+                require_once(COMPONENTS . '/pagination.php');
+                create_pagination($page, $total_pages, "?page=%d&pagesize=" . $pagesize);
+            ?>
         </div>
     </body>
 </html>
