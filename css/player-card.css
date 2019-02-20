@@ -1,0 +1,10 @@
+.player-image{
+    padding: 24px;
+    float: left;
+    width: 100%;
+    max-width: 340px;
+}
+.player-info{
+    float: left;
+    padding-top: 24px;
+}
