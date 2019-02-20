@@ -3,20 +3,21 @@
     require_once(LIB . '/database.php');
     $db = db_connect();
     $pagesize = 10;
-    $page = 0;
+    $page = 1;
     $offset = 0;
     if( isset($_GET["pagesize"]) ){
         $pagesize = min(25, intval($_GET["pagesize"]));
     }
     if( isset($_GET["page"]) ){
         $page = max(1, intval($_GET["page"]));
-        $offset = ($page-1) * $pagesize;
     }
 
     $count_result = pg_query($db, 'SELECT COUNT(*) as total_teams FROM team;');
     $total_teams = pg_fetch_row($count_result)[0];
     $total_pages = ceil($total_teams / $pagesize);
     
+    $page = min($page, $total_pages);
+    $offset = ($page-1) * $pagesize;
     pg_prepare(
         $db, 
         'get_teams', 
