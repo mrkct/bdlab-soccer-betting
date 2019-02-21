@@ -2,7 +2,7 @@
     require_once('config.php');
     require_once(COMPONENTS . '/logincheck.php');
     if( !$logged ){
-        header('location: /bdlab/php/pages/login.php');
+        header('location: ' . PAGES . '/login.php');
         exit();
     }
 ?>
