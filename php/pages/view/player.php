@@ -53,8 +53,8 @@
                             <h3 class="title is-3">
                                 <?php echo $player["name"]; ?>
                             </h3>
-                            <p><b>Height: </b><?php echo $player["height"]; ?></p>
-                            <p><b>Weight: </b><?php echo $player["weight"]; ?></p>
+                            <p><b>Height: </b><?php echo $player["height"]; ?>cm</p>
+                            <p><b>Weight: </b><?php echo $player["weight"]; ?>lb</p>
                             <p><b>Birthday: </b><?php echo date('d/m/y', strtotime($player["birthday"])); ?></p>
                         </div>
                     </div>
