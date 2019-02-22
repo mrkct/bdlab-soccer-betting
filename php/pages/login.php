@@ -28,7 +28,7 @@
                     <div class="field">
                         <label class="label">Name</label>
                         <div class="control has-icons-left"> 
-                            <input class="input is-medium" type="text" name="name" placeholder="Your username here" />
+                            <input class="input is-medium" type="text" name="name" placeholder="Your username here" autofocus/>
                             <span class="icon is-small is-left">
                                 <i class="fas fa-user"></i>
                             </span>
