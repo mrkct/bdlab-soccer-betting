@@ -139,7 +139,7 @@
                                         echo $name;
                                         if( $i < sizeof($hometeam_players) && $hometeam_players[$i]["mvp"] ):
                                     ?>
-                                        <div class="mvp-icon" alt="Most Valuable Player in the team">MVP</div>
+                                        <div class="tag is-info" alt="Most Valuable Player in the team">MVP</div>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -148,7 +148,7 @@
                                         echo $name;
                                         if( $i < sizeof($awayteam_players) && $awayteam_players[$i]["mvp"] ):
                                     ?>
-                                        <div class="mvp-icon" alt="Most Valuable Player in the team">MVP</div>
+                                        <div class="tag is-info" alt="Most Valuable Player in the team">MVP</div>
                                     <?php endif; ?>
                                 </td>
                             </tr>
