@@ -89,15 +89,42 @@
                          JOIN player ON player.id = played.player 
                          WHERE played.match = $1;'
                     );
+                    pg_prepare(
+                        $db,
+                        'get_mvps',
+                        'SELECT id FROM get_match_mvp($1, $2);'
+                    );
                     $result = pg_execute($db, 'get_players', array($match["id"]));
                     $players = pg_fetch_all($result);
+                    $result = pg_execute($db, 'get_mvps', array($match["id"], $hometeam["id"]));
+                    $hometeam_mvps = pg_fetch_all($result);
+                    $result = pg_execute($db, 'get_mvps', array($match["id"], $awayteam["id"]));
+                    $awayteam_mvps = pg_fetch_all($result);
+
                     for($i = 0; $i < sizeof($players); $i++){
                         if( $players[$i]["team"] == $hometeam["id"] ){
+                            // Here we check if the player is in the list of mvps and set the property accordingly
+                            $players[$i]["mvp"] = false;
+                            for($j = 0; $j < sizeof($hometeam_mvps); $j++){
+                                if( $hometeam_mvps[$j]["id"] == $players[$i]["id"] ){
+                                    $players[$i]["mvp"] = true;
+                                    break;
+                                }
+                            }
                             array_push($hometeam_players, $players[$i]);
                         } else {
+                            // Same as above
+                            $players[$i]["mvp"] = false;
+                            for($j = 0; $j < sizeof($awayteam_mvps); $j++){
+                                if( $awayteam_mvps[$j]["id"] == $players[$i]["id"] ){
+                                    $players[$i]["mvp"] = true;
+                                    break;
+                                }
+                            }
                             array_push($awayteam_players, $players[$i]);
                         }
                     }
+                    pg_free_result($result);
                 ?>
                 <table class="table is-striped is-bordered is-hoverable is-fullwidth">
                     <?php
@@ -110,22 +137,25 @@
                                     <?php
                                         $name = $i < sizeof($hometeam_players) ? $hometeam_players[$i]["name"]: "";
                                         echo $name;
+                                        if( $i < sizeof($hometeam_players) && $hometeam_players[$i]["mvp"] ):
                                     ?>
+                                        <div class="mvp-icon" alt="Most Valuable Player in the team">MVP</div>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php
                                         $name = $i < sizeof($awayteam_players) ? $awayteam_players[$i]["name"]: "";
                                         echo $name;
+                                        if( $i < sizeof($awayteam_players) && $awayteam_players[$i]["mvp"] ):
                                     ?>
+                                        <div class="mvp-icon" alt="Most Valuable Player in the team">MVP</div>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                     <?php 
                         endfor;
                     ?>    
                 </table>
-                <?php
-                    pg_free_result($result);
-                ?>
             </div>
             <hr>
             <div class="match-result-quotes">
