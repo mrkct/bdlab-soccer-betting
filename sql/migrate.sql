@@ -94,15 +94,10 @@ CREATE TABLE IF NOT EXISTS team(
     longname VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS country(
-    iso3 CHAR(3) PRIMARY KEY,
-    name VARCHAR(255)
-);
-
 CREATE TABLE IF NOT EXISTS league(
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    country CHAR(3) REFERENCES country(iso3)
+    country VARCHAR(255) NOT NULL DEFAULT 'Unknown'
 );
 
 CREATE TABLE IF NOT EXISTS bet_provider(
