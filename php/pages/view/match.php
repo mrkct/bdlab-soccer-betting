@@ -1,7 +1,8 @@
 <?php
     define('ERR_MISSING_ID', 'MISSING ID IN URL');
     define('ERR_UNKNOWN_MATCH', 'UNKNOWN MATCH');
-    require_once('config.php'); 
+    require_once('config.php');
+    require_once(COMPONENTS . '/error_message.php'); 
 
     $error = null;
 
@@ -39,15 +40,7 @@
         <?php require_once(COMPONENTS . '/logincheck.php'); ?>
         <?php include(COMPONENTS . '/navbar.php'); ?>
         <div class="container">
-            <?php
-                if( $error ):
-                    ?>
-                    <div class="notification is-danger">
-                        There was an error showing this page: <?php echo $error; ?>
-                    </div>
-                    <?php
-                endif;
-            ?>
+            <?php show_message_on_error($error); ?>
             <div class="match-result-panel">
                 <div class="match-info">
                     <div class="league-name">
