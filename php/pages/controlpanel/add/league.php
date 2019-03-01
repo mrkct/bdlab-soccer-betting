@@ -2,7 +2,7 @@
     require_once('config.php');
     require_once(COMPONENTS . '/logincheck.php');
     if( !$logged ){
-        header('location: /bdlab/php/login.php');
+        header('location: ' . PAGES . '/login.php');
         exit();
     }
 
@@ -38,31 +38,13 @@
                         <div class="field">
                             <label class="label">Name of the league</label>
                             <div class="control">
-                                <input class="input" name="name" required/>
+                                <input class="input" name="name" required />
                             </div>
                         </div>
                         <div class="field">
                             <label class="label">League's country</label>
                             <div class="control">
-                                <div class="select">
-                                    <select name="country" required>
-                                        <?php
-                                            pg_prepare(
-                                                $db, 
-                                                'get_countries', 
-                                                'SELECT 
-                                                    country.iso3 AS iso3, 
-                                                    country.name AS name 
-                                                 FROM country 
-                                                 ORDER BY name;'
-                                            );
-                                            $result = pg_execute($db, 'get_countries', array());
-                                            while( $row = pg_fetch_assoc($result) ):
-                                                ?>
-                                                <option value="<?php echo $row['iso3']; ?>"><?php echo $row['name']; ?></option>
-                                            <?php endwhile; ?>
-                                    </select>
-                                </div>
+                                <input class="input" name="country" required />
                             </div>
                         </div>
                         <div class="field">
