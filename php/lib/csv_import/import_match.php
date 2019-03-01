@@ -3,7 +3,6 @@
 require_once(LIB . '/models/team.php');
 require_once(LIB . '/models/player.php');
 require_once(LIB . '/models/match.php');
-require_once(LIB . '/models/country.php');
 require_once(LIB . '/models/league.php');
 require_once(LIB . '/csv_import/InvalidDataException.php');
 
@@ -89,17 +88,10 @@ function match_insert($db, $row){
         );
     }
     
-    Country::prepare($db);
     League::prepare($db);
-    $country = Country::findByName($db, $row["country"]);
-    if( $country == NULL ){
-        throw new InvalidDataException(
-            'Unknown country "' . $row["country"] . '". in match id ' . $row["id"]
-        );
-    }
-    $league = League::findByNameAndCountry($db, $row["league_name"], $country["iso3"]);
+    $league = League::findByNameAndCountry($db, $row["league_name"], $row["country"]);
     if( $league == NULL ){
-        $league = League::insert($db, $row["league_name"], $country["iso3"]);
+        $league = League::insert($db, $row["league_name"], $row["country"]);
     }
     
     Player::prepare($db);
