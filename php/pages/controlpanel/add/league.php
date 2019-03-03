@@ -7,17 +7,16 @@
     }
 
     require_once(LIB . '/database.php');
+    require_once(LIB . '/models/league.php');
     $db = db_connect();
     $success = false;
     if( isset($_POST['name']) && isset($_POST['country']) ){
-        pg_prepare(
-            $db,
-            'insert_league',
-            'INSERT INTO league(name, country) VALUES ($1, $2);'
-        );
-        $result = pg_execute($db, 'insert_league', array($_POST['name'], $_POST['country']));
-        if( $result != false ){
+        try{
+            League::prepare($db);
+            League::insert($db, $_POST['name'], $_POST['country']);
             $success = true;
+        }catch(DBException $e){
+            // TODO: Handle this exception
         }
     }
 ?>
