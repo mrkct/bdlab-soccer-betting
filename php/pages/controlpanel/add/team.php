@@ -7,26 +7,16 @@
     }
 
     require_once(LIB . '/database.php');
+    require_once(LIB . '/models/team.php');
     $db = db_connect();
     $success = false;
     if( isset($_POST['name']) && isset($_POST['shortname']) ){
-        if( !isset($_POST['id']) ){
-            pg_prepare(
-                $db,
-                'insert_team',
-                'INSERT INTO team(longname, shortname) VALUES ($1, $2);'
-            );
-            $result = pg_execute($db, 'insert_team', array($_POST['name'], $_POST['shortname']));
-        } else {
-            pg_prepare(
-                $db,
-                'insert_team',
-                'INSERT INTO team(id, longname, shortname) VALUES($1, $2, $3);',
-            );
-            $result = pg_execute($db, 'insert_team', array($_POST['id'], $_POST['name'], $_POST['shortname']));
-        }
-        if( $result != false ){
+        try{
+            Team::prepare($db);
+            Team::insert($db, $_POST['id'], $_POST['name'], $_POST['shortname']);
             $success = true;
+        }catch(DBException $e){
+            // TODO: Better error handling here
         }
     }
 ?>
@@ -45,7 +35,7 @@
                     <h2 class="title is-2 title-centered">Add Team</h2>
                     <form method="POST" class="controlpanel-form">
                         <div class="field">
-                            <label class="label">Team's ID (optional)</label>
+                            <label class="label">Team's ID</label>
                             <div class="control">
                                 <input class="input" name="id" type="numeric" />
                             </div>
