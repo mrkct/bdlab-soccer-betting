@@ -7,6 +7,7 @@
     }
 
     require_once(LIB . '/database.php');
+    require_once(LIB . '/models/player.php');
     $db = db_connect();
     $success = false;
     if( isset($_POST['name']) ){
@@ -16,33 +17,13 @@
         $height = isset($_POST['height']) && !empty($_POST['height']) ? $_POST['height']: NULL;
         $weight = isset($_POST['weight']) && !empty($_POST['weight']) ? $_POST['weight'] : NULL;
         
-        if( $id == NULL ){
-            pg_prepare(
-                $db,
-                'insert_player',
-                'INSERT INTO player(name, birthday, height, weight) VALUES ($1, $2, $3, $4);'
-            );
-            $result = pg_execute($db, 'insert_player', array($name, $bday, $height, $weight));
+        try{
+            Player::prepare($db);
+            Player::insert($db, $id, $name, $bday, $height, $weight);
             $success = true;
-        } else {
-            pg_prepare(
-                $db,
-                'check_player',
-                'SELECT * FROM player WHERE id = $1'
-            );
-            $result1 = pg_execute($db, 'check_player', array($id));
-            if( pg_num_rows($result1) == 0 ){
-                pg_prepare(
-                    $db,
-                    'insert_player',
-                    'INSERT INTO player(id, name, birthday, height, weight) VALUES ($1, $2, $3, $4, $5);'
-                );
-                $result = pg_execute($db, 'insert_player', array($id, $name, $bday, $height, $weight));
-                $success = true;
-            } else {
-                $success = false;
-                $error = "There is already a player with that id";
-            }
+        }catch(DBException $e){
+            $error = $e;
+            // Todo: Handle this exception better
         }
     }
 ?>
@@ -69,13 +50,13 @@
                         <div class="field">
                             <label class="label">Player's name</label>
                             <div class="control">
-                                <input class="input" name="name" type="text" />
+                                <input class="input" name="name" type="text" required />
                             </div>
                         </div>
                         <div class="field">
                             <label class="label">Player's Birthday (optional)</label>
                             <div class="control">
-                                <input class="input" name="birthday" type="date" />
+                                <input class="input" name="birthday" type="date" required />
                             </div>
                         </div>
                         <div class="field">
