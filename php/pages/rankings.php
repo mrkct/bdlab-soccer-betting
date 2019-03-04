@@ -9,7 +9,7 @@
     
     League::prepare($db);
     $league = League::findById($db, $league_id);
-    
+
     pg_prepare(
         $db,
         "get_top10", 
@@ -17,7 +17,7 @@
          FROM rankings AS R
          JOIN team ON team.id = R.team
          WHERE season = $1 AND league = $2 
-         ORDER BY won_games 
+         ORDER BY won_games DESC
          LIMIT 10;"
     );
     $result = pg_execute(
