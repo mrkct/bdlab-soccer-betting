@@ -24,7 +24,7 @@ BEGIN
     WHERE id = collaborator_id;
 
     IF current_collaborator.role <> 'administrator' THEN
-        result.fail := TRUE;
+        result.success := FALSE;
         result.error_code := -1;
         result.message := 'User is not allowed to insert players';
         RETURN result;
@@ -44,7 +44,7 @@ BEGIN
         weight
     );
     
-    result.fail := TRUE;
+    result.success := TRUE;
     result.error_code := 0;
     result.message := NULL;
     
@@ -52,12 +52,12 @@ BEGIN
 
     EXCEPTION
         WHEN unique_violation THEN
-            result.fail := FALSE;
+            result.success := FALSE;
             result.error_code := -2;
             result.message := 'A row with the same primary key already exists';
             RETURN result;
         WHEN foreign_key_violation THEN
-            result.fail := FALSE;
+            result.success := FALSE;
             result.error_code := -3;
             result.message := 'A foreign key violation occurred';
             RETURN result;
