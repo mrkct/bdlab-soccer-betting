@@ -17,18 +17,29 @@ DECLARE
     current_collaborator soccer.collaborator%ROWTYPE;
     result QueryResult;
 BEGIN
-    SELECT * INTO current_collaborator 
-    FROM collaborator 
-    WHERE id = collaborator_id;
-
-    IF current_collaborator.role <> 'administrator' THEN
+    IF collaborator_id IS NULL THEN
         result.success := FALSE;
         result.error_code := -1;
         result.message := 'User is not allowed to insert leagues';
         RETURN result;
     END IF;
 
-    INSERT INTO league(id, name, country) VALUES (league_id, name, country);
+    SELECT * INTO current_collaborator 
+    FROM collaborator 
+    WHERE id = collaborator_id;
+
+    IF NOT FOUND OR current_collaborator.role <> 'administrator' THEN
+        result.success := FALSE;
+        result.error_code := -1;
+        result.message := 'User is not allowed to insert leagues';
+        RETURN result;
+    END IF;
+
+    IF league_id IS NOT NULL THEN
+        INSERT INTO league(id, name, country) VALUES (league_id, name, country);
+    ELSE
+        INSERT INTO league(name, country) VALUES (name, country);
+    END IF;
     
     result.success := TRUE;
     result.error_code := 0;

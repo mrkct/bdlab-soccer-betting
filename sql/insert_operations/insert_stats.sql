@@ -7,7 +7,7 @@
  * -3   : Foreign key violation
  * When an error occurs outside the ones specified above an exception is thrown
  */
-CREATE OR REPLACE FUNCTION insert_team(
+CREATE OR REPLACE FUNCTION insert_stats(
     collaborator_id INTEGER, 
     player INTEGER,
     attribute_date DATE,
@@ -54,14 +54,21 @@ DECLARE
     current_collaborator soccer.collaborator%ROWTYPE;
     result QueryResult;
 BEGIN
+    IF collaborator_id IS NULL THEN
+        result.success := FALSE;
+        result.error_code := -1;
+        result.message := 'User is not allowed to insert players stats';
+        RETURN result;
+    END IF;
+
     SELECT * INTO current_collaborator 
     FROM collaborator 
     WHERE id = collaborator_id;
 
-    IF current_collaborator.role <> 'administrator' THEN
+    IF NOT FOUND OR current_collaborator.role <> 'administrator' THEN
         result.success := FALSE;
         result.error_code := -1;
-        result.message := 'User is not allowed to insert stats';
+        result.message := 'User is not allowed to insert players';
         RETURN result;
     END IF;
 
