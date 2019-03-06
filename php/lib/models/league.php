@@ -1,6 +1,10 @@
 <?php
 require_once(LIB . '/database.php');
-require_once('dbexception.php');
+require_once(LIB . '/models/exceptions/DBException.php');
+require_once(LIB . '/models/exceptions/DuplicateDataException.php');
+require_once(LIB . '/models/exceptions/PermissionDeniedException.php');
+require_once(LIB . '/models/loggeduser.php');
+require_once(LIB . '/models/exceptions/Util.php');
 require_once('config.php');
 
 
@@ -31,7 +35,7 @@ class League{
             pg_prepare(
                 $db,
                 'League_insert',
-                'INSERT INTO league(name, country) VALUES ($1, $2) RETURNING id, name, country;'
+                'SELECT success, error_code, message FROM insert_league($1, $2, $3, $4);'
             );
             $prepared = true;
         }
@@ -88,24 +92,23 @@ class League{
 
     /**
      * Inserts a league in the database.
-     * Returns the inserted league if success, NULL if the database does
-     * not support the RETURNING construct and can't return after an INSERT.
-     * Raises an exception if an error occurs.
+     * Returns true if success, raises an exception if 
+     * an error occurs. Exception that can be thrown are:
+     * - DBException: A query error occurred. See the message
+     * for more info
      */
     public static function insert($db, $name, $country){
         $result = @pg_execute(
             $db, 
             'League_insert', 
-            array($name, $country)
+            array(LoggedUser::getId(), NULL, $name, $country)
         );
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
-        
-        if( ($row = pg_fetch_assoc($result)) != false ){
-            return $row;
-        } else {
-            return NULL;
-        }
+        $row = pg_fetch_assoc($result);
+        result_row_to_exception($row);
+
+        return true;
     }
 }

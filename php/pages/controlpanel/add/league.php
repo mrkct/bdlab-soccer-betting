@@ -15,8 +15,14 @@
             League::prepare($db);
             League::insert($db, $_POST['name'], $_POST['country']);
             $success = true;
+        }catch(PermissionDeniedException $e){
+            // TODO: Handle this exception
+            echo "Permesso negato";
+            exit(0);
         }catch(DBException $e){
             // TODO: Handle this exception
+            echo $e;
+            exit(0);
         }
     }
 ?>
