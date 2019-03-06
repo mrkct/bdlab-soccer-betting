@@ -1,6 +1,10 @@
 <?php
 require_once(LIB . '/database.php');
-require_once('dbexception.php');
+require_once(LIB . '/models/exceptions/DBException.php');
+require_once(LIB . '/models/exceptions/DuplicateDataException.php');
+require_once(LIB . '/models/exceptions/PermissionDeniedException.php');
+require_once(LIB . '/models/loggeduser.php');
+require_once(LIB . '/models/exceptions/Util.php');
 require_once('config.php');
 
 
@@ -21,7 +25,7 @@ class Player{
             pg_prepare(
                 $db,
                 'Player_insert',
-                'INSERT INTO player(id, name, birthday, height, weight) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, birthday, height, weight;'
+                'SELECT success, error_code, message FROM insert_player($1, $2, $3, $4, $5, $6);'
             );
             $prepared = true;
         }
@@ -46,24 +50,25 @@ class Player{
 
     /**
      * Inserts a player in the database.
-     * Returns the inserted player if success, NULL if the database does
-     * not support the RETURNING construct and can't return after an INSERT.
-     * Raises an exception if an error occurs.
+     * Returns true on success, throws an exception in case of failure.
+     * Possible thrown exceptions are:
+     * - PermissionDeniedException
+     * - DuplicateDataException
+     * - DBException
      */
     public static function insert($db, $id, $name, $birthday, $height, $weight){
         $result = @pg_execute(
             $db, 
             'Player_insert', 
-            array($id, $name, $birthday, $height, $weight)
+            array(LoggedUser::getId(), $id, $name, $birthday, $height, $weight)
         );
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
 
-        if( ($row = pg_fetch_assoc($result)) != false ){
-            return $row;
-        } else {
-            return NULL;
-        }
+        $row = pg_fetch_assoc($result);
+        result_row_to_exception($row);
+
+        return true;
     }
 }

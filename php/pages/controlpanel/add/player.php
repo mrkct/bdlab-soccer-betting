@@ -21,6 +21,10 @@
             Player::prepare($db);
             Player::insert($db, $id, $name, $bday, $height, $weight);
             $success = true;
+        }catch(PermissionDeniedException $e){
+            $error = "You are not allowed to add players to the database";
+        }catch(DuplicateDataException $e){
+            $error = "There is already a player with that ID";
         }catch(DBException $e){
             $error = $e;
             // Todo: Handle this exception better
