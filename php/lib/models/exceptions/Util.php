@@ -20,7 +20,7 @@ function result_row_to_exception($resultrow){
             throw new PermissionDeniedException($resultrow['message']);
             break;
         case -2:
-            throw new DuplicateDataExcetion($resultrow['message']);
+            throw new DuplicateDataException($resultrow['message']);
             break;
         default:
             throw new DBException($resultrow['message']);
