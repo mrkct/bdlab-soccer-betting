@@ -1,7 +1,7 @@
 <?php
+require_once('config.php');
 require_once(LIB . '/database.php');
 require_once('dbexception.php');
-require_once('config.php');
 
 
 class Match{
