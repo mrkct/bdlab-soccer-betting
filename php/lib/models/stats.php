@@ -1,7 +1,9 @@
 <?php
-require_once(LIB . '/database.php');
-require_once('dbexception.php');
 require_once('config.php');
+require_once(LIB . '/database.php');
+require_once(LIB . '/models/exceptions/DBException.php');
+require_once(LIB . '/models/loggeduser.php');
+require_once(LIB . '/models/exceptions/Util.php');
 
 
 class Stats{
@@ -62,129 +64,12 @@ class Stats{
             pg_prepare(
                 $db, 
                 'Stats_insert',
-                'INSERT INTO stats(
-                    player,
-                    attribute_date,
-                    overall_rating,
-                    potential,
-                    preferred_foot,
-                    attacking_work_rate,
-                    defensive_work_rate,
-                    crossing,
-                    finishing,
-                    heading_accuracy,
-                    short_passing,
-                    volleys,
-                    dribbling,
-                    curve,
-                    free_kick_accuracy,
-                    long_passing,
-                    ball_control,
-                    acceleration,
-                    sprint_speed,
-                    agility,
-                    reactions,
-                    balance,
-                    shot_power,
-                    jumping,
-                    stamina,
-                    strength,
-                    long_shots,
-                    aggression,
-                    interceptions,
-                    positioning,
-                    vision,
-                    penalties,
-                    marking,
-                    standing_tackle,
-                    sliding_tackle,
-                    gk_diving,
-                    gk_handling,
-                    gk_kicking,
-                    gk_positioning,
-                    gk_reflexes
-                ) VALUES (
-                    $1,
-                    $2,
-                    $3,
-                    $4,
-                    $5,
-                    $6,
-                    $7,
-                    $8,
-                    $9,
-                    $10,
-                    $11,
-                    $12,
-                    $13,
-                    $14,
-                    $15,
-                    $16,
-                    $17,
-                    $18,
-                    $19,
-                    $20,
-                    $21,
-                    $22,
-                    $23,
-                    $24,
-                    $25,
-                    $26,
-                    $27,
-                    $28,
-                    $29,
-                    $30,
-                    $31,
-                    $32,
-                    $33,
-                    $34,
-                    $35,
-                    $36,
-                    $37,
-                    $38,
-                    $39,
-                    $40
-                ) RETURNING 
-                    player,
-                    attribute_date,
-                    overall_rating,
-                    potential,
-                    preferred_foot,
-                    attacking_work_rate,
-                    defensive_work_rate,
-                    crossing,
-                    finishing,
-                    heading_accuracy,
-                    short_passing,
-                    volleys,
-                    dribbling,
-                    curve,
-                    free_kick_accuracy,
-                    long_passing,
-                    ball_control,
-                    acceleration,
-                    sprint_speed,
-                    agility,
-                    reactions,
-                    balance,
-                    shot_power,
-                    jumping,
-                    stamina,
-                    strength,
-                    long_shots,
-                    aggression,
-                    interceptions,
-                    positioning,
-                    vision,
-                    penalties,
-                    marking,
-                    standing_tackle,
-                    sliding_tackle,
-                    gk_diving,
-                    gk_handling,
-                    gk_kicking,
-                    gk_positioning,
-                    gk_reflexes;'
+                'SELECT success, error_code, message FROM insert_stats(
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+                    $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23,
+                    $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34,
+                    $35, $36, $37, $38, $39, $40, $41
+                );'
             );
             $prepared = true;
         }
@@ -229,6 +114,7 @@ class Stats{
         $gk_kicking, $gk_positioning, $gk_reflexes
     ){
         $result = @pg_execute($db, 'Stats_insert', array(
+            LoggedUser::getId(),
             $player, $attribute_date, $overall_rating,
             $potential, $preferred_foot, $attacking_work_rate,
             $defensive_work_rate, $crossing, $finishing,
@@ -246,11 +132,9 @@ class Stats{
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
-        
-        if( ($row = pg_fetch_assoc($result)) != false ){
-            return $row;
-        } else {
-            return NULL;
-        }
+        $row = pg_fetch_assoc($result);
+        result_row_to_exception($row);
+
+        return true;
     }
 }
