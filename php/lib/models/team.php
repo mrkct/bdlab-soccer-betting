@@ -1,6 +1,8 @@
 <?php
 require_once(LIB . '/database.php');
-require_once('dbexception.php');
+require_once(LIB . '/models/exceptions/DBException.php');
+require_once(LIB . '/models/loggeduser.php');
+require_once(LIB . '/models/exceptions/Util.php');
 require_once('config.php');
 
 
@@ -21,7 +23,7 @@ class Team{
             pg_prepare(
                 $db, 
                 'Team_insert',
-                'INSERT INTO team(id, shortname, longname) VALUES ($1, $2, $3) RETURNING id, shortname, longname;'
+                'SELECT success, error_code, message FROM insert_team($1, $2, $3, $4);'
             );
             $prepared = true;
         }
@@ -46,20 +48,24 @@ class Team{
 
     /**
      * Inserts a team in the database.
-     * Returns the inserted team if success, NULL if the database does
-     * not support the RETURNING construct and can't return after an INSERT.
-     * Raises an exception if an error occurs.
+     * Returns true on success, raises an exception if
+     * an error occurs. Exceptions that can be thrown are:
+     * - DuplicateDataException
+     * - PermissionDeniedException
+     * - DBException
      */
     public static function insert($db, $id, $shortname, $longname){
-        $result = @pg_execute($db, 'Team_insert', array($id, $shortname, $longname));
+        $result = @pg_execute(
+            $db, 
+            'Team_insert', 
+            array(LoggedUser::getId(), $id, $shortname, $longname)
+        );
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
+        $row = pg_fetch_assoc($result);
+        result_row_to_exception($row);
 
-        if( ($row = pg_fetch_assoc($result)) != false ){
-            return $row;
-        } else {
-            return NULL;
-        }
+        return true;
     }
 }
