@@ -1,11 +1,11 @@
 <?php
+require_once('config.php');
 require_once(LIB . '/database.php');
 require_once(LIB . '/models/exceptions/DBException.php');
 require_once(LIB . '/models/exceptions/DuplicateDataException.php');
 require_once(LIB . '/models/exceptions/PermissionDeniedException.php');
 require_once(LIB . '/models/loggeduser.php');
 require_once(LIB . '/models/exceptions/Util.php');
-require_once('config.php');
 
 
 class League{
