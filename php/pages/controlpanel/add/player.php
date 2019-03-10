@@ -12,7 +12,7 @@
     require_once(LIB . '/database.php');
     require_once(LIB . '/models/player.php');
     $db = db_connect();
-    $success = false;
+    
     if( isset($_POST['name']) ){
         $name = $_POST['name'];
         $id = isset($_POST['id']) && !empty($_POST['id'])? $_POST['id'] : NULL;
