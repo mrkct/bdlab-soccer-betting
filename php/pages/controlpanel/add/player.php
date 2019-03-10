@@ -1,8 +1,11 @@
 <?php
     require_once('config.php');
     require_once(COMPONENTS . '/logincheck.php');
+    require_once(COMPONENTS . '/error_message.php');
+
+
     if( !$logged ){
-        header('location: /bdlab/php/login.php');
+        header('location: ' . PAGES . '/login.php');
         exit();
     }
 
@@ -22,12 +25,11 @@
             Player::insert($db, $id, $name, $bday, $height, $weight);
             $success = true;
         }catch(PermissionDeniedException $e){
-            $error = "You are not allowed to add players to the database";
+            $error = "You are not allowed to insert players' data";
         }catch(DuplicateDataException $e){
-            $error = "There is already a player with that ID";
+            $error = "There is already a player with that id";
         }catch(DBException $e){
-            $error = $e;
-            // Todo: Handle this exception better
+            $error = "An unknown error occurred[" . $e->getMessage() . "]";
         }
     }
 ?>
@@ -81,17 +83,16 @@
                             </div>
                         </div>
                         <?php 
-                            if ( $success ): ?>
+                            if ( isset($success) ): ?>
                                 <div class="notification is-success">
                                     New player successfully added
                                 </div>
                         <?php endif; ?>
                         <?php
-                            if( !$success && isset($error) ): ?>
-                                <div class="notification is-danger">
-                                    Error: <?php echo $error; ?>
-                                </div>
-                        <?php endif; ?>
+                            if( isset($error) ){
+                                show_message_on_error($error);
+                            }
+                        ?>
                     </form>
                 </div>
             </div>
