@@ -1,6 +1,9 @@
 <?php
     require_once('config.php');
     require_once(COMPONENTS . '/logincheck.php');
+    require_once(COMPONENTS . '/error_message.php');
+
+
     if( !$logged ){
         header('location: /bdlab/php/login.php');
         exit();
@@ -9,14 +12,17 @@
     require_once(LIB . '/database.php');
     require_once(LIB . '/models/team.php');
     $db = db_connect();
-    $success = false;
     if( isset($_POST['name']) && isset($_POST['shortname']) ){
         try{
             Team::prepare($db);
             Team::insert($db, $_POST['id'], $_POST['name'], $_POST['shortname']);
             $success = true;
+        }catch(PermissionDeniedException $e){
+            $error = "You are not allowed to insert team's data";
+        }catch(DuplicateDataException $e){
+            $error = "There is already a team with that id";
         }catch(DBException $e){
-            // TODO: Better error handling here
+            $error = "An unknown error occurred[" . $e->getMessage() . "]";
         }
     }
 ?>
@@ -58,11 +64,16 @@
                             </div>
                         </div>
                         <?php 
-                            if ( $success ): ?>
+                            if ( isset($success) ): ?>
                                 <div class="notification is-success">
                                     New team successfully added
                                 </div>
                         <?php endif; ?>
+                        <?php
+                            if( isset($error) ){
+                                show_message_on_error($error);
+                            }
+                        ?>
                     </form>
                 </div>
             </div>
