@@ -1,7 +1,11 @@
 <?php
 require_once('config.php');
 require_once(LIB . '/database.php');
-require_once('dbexception.php');
+require_once(LIB . '/models/exceptions/DBException.php');
+require_once(LIB . '/models/exceptions/DuplicateDataException.php');
+require_once(LIB . '/models/exceptions/PermissionDeniedException.php');
+require_once(LIB . '/models/loggeduser.php');
+require_once(LIB . '/models/exceptions/Util.php');
 
 
 class Match{
@@ -34,29 +38,11 @@ class Match{
             pg_prepare(
                 $db, 
                 'Match_insert',
-                'INSERT INTO match(
-                    id, 
-                    league, 
-                    season, 
-                    stage, 
-                    played_on, 
-                    hometeam_goals, 
-                    awayteam_goals, 
-                    hometeam, 
-                    awayteam, 
-                    created_by
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
-                RETURNING 
-                    id, 
-                    league, 
-                    season, 
-                    stage, 
-                    played_on, 
-                    hometeam_goals, 
-                    awayteam_goals, 
-                    hometeam, 
-                    awayteam, 
-                    created_by;'
+                'SELECT success, error_code, message
+                FROM insert_match(
+                    $1, $2, $3, $4, $5, 
+                    $6, $7, $8, $9, $10
+                );'
             );
             pg_prepare(
                 $db,
@@ -99,6 +85,7 @@ class Match{
     public static function insert($db, $id, $league, $season, $stage, $played_on, $hometeam,
                                   $awayteam, $hometeam_goals, $awayteam_goals, $created_by){
         $result = @pg_execute($db, 'Match_insert', array(
+            LoggedUser::getId(),
             $id,
             $league,
             $season,
@@ -107,18 +94,15 @@ class Match{
             $hometeam_goals,
             $awayteam_goals,
             $hometeam,
-            $awayteam,
-            $created_by
+            $awayteam
         ));
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
+        $row = pg_fetch_assoc($result);
+        result_row_to_exception($row);
 
-        if( ($row = pg_fetch_assoc($result)) != false ){
-            return $row;
-        } else {
-            return NULL;
-        }
+        return true;
     }
 
     /**
