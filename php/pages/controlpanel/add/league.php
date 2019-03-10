@@ -1,6 +1,9 @@
 <?php
     require_once('config.php');
     require_once(COMPONENTS . '/logincheck.php');
+    require_once(COMPONENTS . '/error_message.php');
+
+
     if( !$logged ){
         header('location: ' . PAGES . '/login.php');
         exit();
@@ -9,20 +12,17 @@
     require_once(LIB . '/database.php');
     require_once(LIB . '/models/league.php');
     $db = db_connect();
-    $success = false;
     if( isset($_POST['name']) && isset($_POST['country']) ){
         try{
             League::prepare($db);
             League::insert($db, $_POST['name'], $_POST['country']);
             $success = true;
         }catch(PermissionDeniedException $e){
-            // TODO: Handle this exception
-            echo "Permesso negato";
-            exit(0);
+            $error = "You are not allowed to insert team's data";
+        }catch(DuplicateDataException $e){
+            $error = "There is already a team with that id";
         }catch(DBException $e){
-            // TODO: Handle this exception
-            echo $e;
-            exit(0);
+            $error = "An unknown error occurred[" . $e->getMessage() . "]";
         }
     }
 ?>
@@ -58,11 +58,16 @@
                             </div>
                         </div>
                         <?php 
-                            if ( $success ): ?>
+                            if ( isset($success) ): ?>
                                 <div class="notification is-success">
                                     New league successfully added
                                 </div>
                         <?php endif; ?>
+                        <?php
+                            if( isset($error) ){
+                                show_message_on_error($error);
+                            }
+                        ?>
                     </form>
                 </div>
             </div>
