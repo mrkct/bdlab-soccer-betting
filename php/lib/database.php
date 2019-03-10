@@ -11,11 +11,14 @@ function db_connect(){
         DB_PASSWORD
     );
 
-    $db = pg_connect($connection_string);
-    pg_query(
-        $db, 
-        sprintf("SET search_path=%s;", DB_SCHEMA)
-    );
+    static $db = null;
+    if( $db == null ){
+        $db = pg_connect($connection_string);
+        pg_query(
+            $db, 
+            sprintf("SET search_path=%s;", DB_SCHEMA)
+        );
+    }
 
     return $db;
 }
