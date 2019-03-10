@@ -18,9 +18,9 @@
             League::insert($db, $_POST['name'], $_POST['country']);
             $success = true;
         }catch(PermissionDeniedException $e){
-            $error = "You are not allowed to insert team's data";
+            $error = "You are not allowed to insert league's data";
         }catch(DuplicateDataException $e){
-            $error = "There is already a team with that id";
+            $error = "There is already a league with that id";
         }catch(DBException $e){
             $error = "An unknown error occurred[" . $e->getMessage() . "]";
         }
