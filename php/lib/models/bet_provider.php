@@ -1,7 +1,11 @@
 <?php
-require_once(LIB . '/database.php');
-require_once('dbexception.php');
 require_once('config.php');
+require_once(LIB . '/database.php');
+require_once(LIB . '/models/exceptions/DBException.php');
+require_once(LIB . '/models/exceptions/DuplicateDataException.php');
+require_once(LIB . '/models/exceptions/PermissionDeniedException.php');
+require_once(LIB . '/models/loggeduser.php');
+require_once(LIB . '/models/exceptions/Util.php');
 
 
 class BetProvider{
@@ -21,7 +25,8 @@ class BetProvider{
             pg_prepare(
                 $db,
                 'BetProvider_insert',
-                'INSERT INTO bet_provider(id, name) VALUES ($1, $2) RETURNING id, name;'
+                'SELECT success, error_code, message 
+                 FROM insert_bet_provider($1, $2, $3);'
             );
             $prepared = true;
         }
@@ -54,16 +59,14 @@ class BetProvider{
         $result = @pg_execute(
             $db, 
             'BetProvider_insert', 
-            array($id, $name)
+            array(LoggedUser::getId(), $id, $name)
         );
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
-        
-        if( ($row = pg_fetch_assoc($result)) != false ){
-            return $row;
-        } else {
-            return NULL;
-        }
+        $row = pg_fetch_assoc($result);
+        result_row_to_exception($row);
+
+        return true;
     }
 }
