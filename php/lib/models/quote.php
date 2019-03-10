@@ -1,7 +1,9 @@
 <?php
-require_once(LIB . '/database.php');
-require_once('dbexception.php');
 require_once('config.php');
+require_once(LIB . '/database.php');
+require_once(LIB . '/models/exceptions/DBException.php');
+require_once(LIB . '/models/loggeduser.php');
+require_once(LIB . '/models/exceptions/Util.php');
 
 
 class Quote{
@@ -29,12 +31,8 @@ class Quote{
             pg_prepare(
                 $db,
                 'Quote_insert',
-                'INSERT INTO quote
-                    (match, bet_provider, home_quote, draw_quote, away_quote, created_by) 
-                VALUES 
-                    ($1, $2, $3, $4, $5, $6) 
-                RETURNING 
-                    match, bet_provider, home_quote, draw_quote, away_quote, created_by;'
+                'SELECT success, error_code, message 
+                 FROM insert_quote($1, $2, $3, $4, $5, $6);'
             );
             $prepared = true;
         }
@@ -68,16 +66,14 @@ class Quote{
         $result = @pg_execute(
             $db, 
             'Quote_insert', 
-            array($match, $bet_provider, $home_quote, $draw_quote, $away_quote, $created_by)
+            array(LoggedUser::getId(), $match, $bet_provider, $home_quote, $draw_quote, $away_quote)
         );
         if( !$result ){
             throw new DBException(pg_last_error($db));
-        }
-        
-        if( ($row = pg_fetch_assoc($result)) != false ){
-            return $row;
-        } else {
-            return NULL;
-        }
+        } 
+        $row = pg_fetch_assoc($result);
+        result_row_to_exception($row);
+
+        return true;
     }
 }
