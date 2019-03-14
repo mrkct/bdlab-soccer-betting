@@ -114,7 +114,7 @@ BEGIN
         gk_positioning,
         gk_reflexes
     ) VALUES (
-        player_id,
+        player,
         attribute_date,
         overall_rating,
         potential,
