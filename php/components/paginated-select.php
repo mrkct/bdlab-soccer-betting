@@ -22,10 +22,11 @@
     function create_paginated_select_form($query, $total_items, $display_format, $link_format){
         $current_page = isset($_GET['page'])? intval($_GET['page']) : 1;
         $page_size = isset($_GET['page_size'])? intval($_GET['page_size']) : 10;
+        $offset = ( $current_page - 1 ) * $page_size;
 
         $db = db_connect();
         pg_prepare($db, "get_page", $query);
-        $result = pg_execute($db, "get_page", array($page_size, $current_page));
+        $result = pg_execute($db, "get_page", array($page_size, $offset));
         $result = pg_fetch_all($result, PGSQL_ASSOC);
 ?>
     <div class="list is-hoverable paginated-select">
