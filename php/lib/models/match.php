@@ -91,10 +91,10 @@ class Match{
             $season,
             $stage,
             $played_on,
-            $hometeam_goals,
-            $awayteam_goals,
             $hometeam,
-            $awayteam
+            $awayteam,
+            $hometeam_goals,
+            $awayteam_goals
         ));
         if( !$result ){
             throw new DBException(pg_last_error($db));
