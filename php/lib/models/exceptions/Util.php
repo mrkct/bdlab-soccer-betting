@@ -22,6 +22,9 @@ function result_row_to_exception($resultrow){
         case -2:
             throw new DuplicateDataException($resultrow['message']);
             break;
+        case -3:
+            throw new ForeignKeyException($resultrow['message']);
+            break;
         default:
             throw new DBException($resultrow['message']);
             break;
