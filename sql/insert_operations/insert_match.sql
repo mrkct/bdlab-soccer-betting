@@ -32,7 +32,7 @@ BEGIN
 
     SELECT * INTO current_collaborator 
     FROM collaborator 
-    WHERE id = collaborator_id;
+    WHERE collaborator.id = collaborator_id;
 
     IF NOT FOUND OR current_collaborator.role NOT IN ('administrator', 'operator') THEN
         result.success := FALSE;
@@ -41,9 +41,24 @@ BEGIN
         RETURN result;
     END IF;
 
-    INSERT INTO match(id, league, season, stage, played_on, hometeam, awayteam, hometeam_goals, awayteam_goals, created_by)
-                VALUES(id, league, season, stage, played_on, hometeam, awayteam, hometeam_goals, awayteam_goals, collaborator_id);
-    
+    IF id IS NOT NULL THEN
+        INSERT INTO match(
+            id, league, season, stage, played_on, hometeam, awayteam, 
+            hometeam_goals, awayteam_goals, created_by
+        ) VALUES (
+            id, league, season, stage, played_on, hometeam, awayteam, 
+            hometeam_goals, awayteam_goals, collaborator_id
+        );
+    ELSE
+        INSERT INTO match(
+            league, season, stage, played_on, hometeam, awayteam, 
+            hometeam_goals, awayteam_goals, created_by
+        ) VALUES (
+            league, season, stage, played_on, hometeam, awayteam, 
+            hometeam_goals, awayteam_goals, collaborator_id
+        );
+    END IF;
+
     result.success := TRUE;
     result.error_code := 0;
     result.message := NULL;
