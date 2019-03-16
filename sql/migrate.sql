@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS match(
     stage INTEGER NOT NULL,
     played_on DATE NOT NULL,
     hometeam_goals INTEGER NOT NULL CHECK (hometeam_goals >= 0),
-    awayteam_goals INTEGER NOT NULL CHECK (hometeam_goals >= 0),
+    awayteam_goals INTEGER NOT NULL CHECK (awayteam_goals >= 0),
     hometeam INTEGER REFERENCES team(id),
     awayteam INTEGER REFERENCES team(id),
     created_by INTEGER NOT NULL REFERENCES collaborator(id),
