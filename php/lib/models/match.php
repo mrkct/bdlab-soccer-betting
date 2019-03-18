@@ -38,7 +38,10 @@ class Match{
             pg_prepare(
                 $db, 
                 'Match_insert',
-                'SELECT success, error_code, message
+                'SELECT 
+                    id, league, season, stage, played_on, hometeam_goals, 
+                    awayteam_goals, hometeam, awayteam, created_by, 
+                    success, error_code, message
                 FROM insert_match(
                     $1, $2, $3, $4, $5, 
                     $6, $7, $8, $9, $10
@@ -78,9 +81,11 @@ class Match{
 
     /**
      * Inserts a match in the database.
-     * Returns the inserted match if success, NULL if the database does
-     * not support the RETURNING construct and can't return after an INSERT.
-     * Raises an exception if an error occurs.
+     * Returns an associative array with the newly inserted
+     * match on success, raises an exception if 
+     * an error occurs. Exception that can be thrown are:
+     * DuplicateDataException, PermissionDeniedException, 
+     * ForeignKeyException, DBException
      */
     public static function insert($db, $id, $league, $season, $stage, $played_on, $hometeam,
                                   $awayteam, $hometeam_goals, $awayteam_goals, $created_by){
@@ -102,7 +107,17 @@ class Match{
         $row = pg_fetch_assoc($result);
         result_row_to_exception($row);
 
-        return true;
+        return array(
+            "id" => $row["id"],
+            "league" => $row["league"],
+            "season" => $row["season"],
+            "stage" => $row["stage"],
+            "played_on" => $row["played_on"],
+            "hometeam" => $row["hometeam"],
+            "awayteam" => $row["awayteam"],
+            "hometeam_goals" => $row["hometeam_goals"],
+            "awayteam_goals" => $row["awayteam_goals"]
+        );
     }
 
     /**
