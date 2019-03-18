@@ -35,7 +35,8 @@ class League{
             pg_prepare(
                 $db,
                 'League_insert',
-                'SELECT success, error_code, message FROM insert_league($1, $2, $3, $4);'
+                'SELECT id, name, country, success, error_code, message 
+                 FROM insert_league($1, $2, $3, $4);'
             );
             $prepared = true;
         }
@@ -92,7 +93,8 @@ class League{
 
     /**
      * Inserts a league in the database.
-     * Returns true if success, raises an exception if 
+     * Returns an associative array with the newly inserted
+     * league on success, raises an exception if 
      * an error occurs. Exception that can be thrown are:
      * - DBException: A query error occurred. See the message
      * for more info
@@ -109,6 +111,10 @@ class League{
         $row = pg_fetch_assoc($result);
         result_row_to_exception($row);
 
-        return true;
+        return array(
+            "id" => $row["id"],
+            "name" => $row["name"],
+            "country" => $row["country"]
+        );
     }
 }
