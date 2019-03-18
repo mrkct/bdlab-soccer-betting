@@ -96,8 +96,7 @@ class League{
      * Returns an associative array with the newly inserted
      * league on success, raises an exception if 
      * an error occurs. Exception that can be thrown are:
-     * - DBException: A query error occurred. See the message
-     * for more info
+     * DuplicateDataException, PermissionDeniedException, DBException
      */
     public static function insert($db, $name, $country){
         $result = @pg_execute(
