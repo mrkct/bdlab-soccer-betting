@@ -1,6 +1,8 @@
 /**
- * Inserts a quote for a match and returns an integer representing the status
- * of the operation. Status codes are:
+ * Inserts a quote data and returns a QuoteQR containing all the fields
+ * in the quote table, which will contain the newly inserted data if successfull,
+ * and 3 extra fields: success(boolean), error_code and message. A table of the possible
+ * error_codes follows:
  * 0    : OK
  * -1   : User is not allowed to insert
  * -2   : Duplicate row
@@ -14,10 +16,10 @@ CREATE OR REPLACE FUNCTION insert_quote(
     home_quote DOUBLE PRECISION,
     draw_quote DOUBLE PRECISION,
     away_quote DOUBLE PRECISION
-) RETURNS QueryResult AS $$
+) RETURNS QuoteQR AS $$
 DECLARE
     c_user soccer.collaborator%ROWTYPE;
-    result QueryResult;
+    result QuoteQR;
 BEGIN
     IF collaborator_id IS NULL THEN
         result.success := FALSE;
@@ -28,7 +30,7 @@ BEGIN
 
     SELECT * INTO c_user 
     FROM collaborator 
-    WHERE id = collaborator_id;
+    WHERE collaborator.id = collaborator_id;
 
     IF NOT FOUND OR c_user.role NOT IN ('administrator', 'partner') THEN
         result.success := FALSE;
@@ -45,7 +47,15 @@ BEGIN
     END IF;
 
     INSERT INTO quote(match, bet_provider, home_quote, draw_quote, away_quote, created_by)
-                VALUES(match, bet_provider, home_quote, draw_quote, away_quote, collaborator_id);
+                VALUES(match, bet_provider, home_quote, draw_quote, away_quote, collaborator_id)
+    RETURNING
+        quote.match, 
+        quote.bet_provider, 
+        quote.home_quote, 
+        quote.draw_quote, 
+        quote.away_quote, 
+        quote.created_by
+    INTO result;
     
     result.success := TRUE;
     result.error_code := 0;

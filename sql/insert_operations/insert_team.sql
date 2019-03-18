@@ -1,6 +1,8 @@
 /**
- * Inserts a team data and returns an integer representing the status
- * of the operation. Status codes are:
+ * Inserts a team's data and returns a TeamQR containing all the fields
+ * in the team table, which will contain the newly inserted data if successfull,
+ * and 3 extra fields: success(boolean), error_code and message. A table of the possible
+ * error_codes follows:
  * 0    : OK
  * -1   : User is not allowed to insert
  * -2   : Duplicate row
@@ -12,10 +14,10 @@ CREATE OR REPLACE FUNCTION insert_team(
     team_id INTEGER, 
     shortname VARCHAR(100),
     longname VARCHAR(255)
-) RETURNS QueryResult AS $$
+) RETURNS TeamQR AS $$
 DECLARE
     current_collaborator soccer.collaborator%ROWTYPE;
-    result QueryResult;
+    result TeamQR;
 BEGIN
     IF collaborator_id IS NULL THEN
         result.success := FALSE;
@@ -26,7 +28,7 @@ BEGIN
 
     SELECT * INTO current_collaborator 
     FROM collaborator 
-    WHERE id = collaborator_id;
+    WHERE collaborator.id = collaborator_id;
 
     IF NOT FOUND OR current_collaborator.role <> 'administrator' THEN
         result.success := FALSE;
@@ -37,10 +39,22 @@ BEGIN
 
     IF team_id IS NOT NULL THEN
         INSERT INTO team(id, shortname, longname) 
-                    VALUES(team_id, shortname, longname);
+                    VALUES(team_id, shortname, longname)
+        RETURNING
+            team.id, 
+            team.shortname, 
+            team.longname
+        INTO result;
+        -- Here we fix the serial id, since it probably got messed up by this insert
+        PERFORM setval('soccer.team_id_seq', COALESCE((SELECT MAX(team.id)+1 FROM team), 1), false);
     ELSE
         INSERT INTO team(shortname, longname) 
-                    VALUES(shortname, longname);
+                    VALUES(shortname, longname)
+        RETURNING
+            team.id, 
+            team.shortname, 
+            team.longname
+        INTO result;
     END IF;
     
     result.success := TRUE;

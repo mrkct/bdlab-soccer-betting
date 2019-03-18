@@ -1,6 +1,8 @@
 /**
- * Inserts a player data and returns an integer representing the status
- * of the operation. Status codes are:
+ * Inserts a player data and returns a PlayerQR containing all the fields
+ * in the player table, which will contain the newly inserted data if successfull,
+ * and 3 extra fields: success(boolean), error_code and message. A table of the possible
+ * error_codes follows:
  * 0    : OK
  * -1   : User is not allowed to insert
  * -2   : Duplicate row
@@ -14,10 +16,10 @@ CREATE OR REPLACE FUNCTION insert_player(
     birthday DATE, 
     height DOUBLE PRECISION, 
     weight DOUBLE PRECISION 
-) RETURNS QueryResult AS $$
+) RETURNS PlayerQR AS $$
 DECLARE
     current_collaborator soccer.collaborator%ROWTYPE;
-    result QueryResult;
+    result PlayerQR;
 BEGIN
     IF collaborator_id IS NULL THEN
         result.success := FALSE;
@@ -28,7 +30,7 @@ BEGIN
 
     SELECT * INTO current_collaborator 
     FROM collaborator 
-    WHERE id = collaborator_id;
+    WHERE collaborator.id = collaborator_id;
 
     IF NOT FOUND OR current_collaborator.role <> 'administrator' THEN
         result.success := FALSE;
@@ -39,10 +41,26 @@ BEGIN
 
     IF player_id IS NOT NULL THEN
         INSERT INTO player(id, name, birthday, height, weight) 
-                    VALUES(player_id, name, birthday, height, weight);
+                    VALUES(player_id, name, birthday, height, weight)
+        RETURNING
+            player.id, 
+            player.name, 
+            player.birthday, 
+            player.height, 
+            player.weight
+        INTO result;
+        -- Here we fix the serial id, since it probably got messed up by this insert
+        PERFORM setval('soccer.player_id_seq', COALESCE((SELECT MAX(player.id)+1 FROM player), 1), false);
     ELSE
         INSERT INTO player(name, birthday, height, weight) 
-                    VALUES(name, birthday, height, weight);
+                    VALUES(name, birthday, height, weight)
+        RETURNING
+            player.id, 
+            player.name, 
+            player.birthday, 
+            player.height, 
+            player.weight
+        INTO result;
     END IF;
     
     result.success := TRUE;
