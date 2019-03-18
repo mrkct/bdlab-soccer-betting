@@ -1,6 +1,8 @@
 /**
- * Inserts a bet provider data and returns an integer representing the status
- * of the operation. Status codes are:
+ * Inserts a bet provider data and returns a BetProviderQR containing all the fields
+ * in the bet_provider table, which will contain the newly inserted data if successfull,
+ * and 3 extra fields: success(boolean), error_code and message. A table of the possible
+ * error_codes follows:
  * 0    : OK
  * -1   : User is not allowed to insert
  * -2   : Duplicate row
@@ -11,10 +13,11 @@ CREATE OR REPLACE FUNCTION insert_bet_provider(
     collaborator_id INTEGER, 
     id VARCHAR(5),
     name VARCHAR(255)
-) RETURNS QueryResult AS $$
+) RETURNS BetProviderQR AS $$
 DECLARE
     current_collaborator soccer.collaborator%ROWTYPE;
-    result QueryResult;
+    result BetProviderQR;
+    test_id INTEGER;
 BEGIN
     IF collaborator_id IS NULL THEN
         result.success := FALSE;
@@ -25,7 +28,7 @@ BEGIN
 
     SELECT * INTO current_collaborator 
     FROM collaborator 
-    WHERE id = collaborator_id;
+    WHERE collaborator.id = collaborator_id;
 
     IF NOT FOUND OR current_collaborator.role <> 'administrator' THEN
         result.success := FALSE;
@@ -34,7 +37,7 @@ BEGIN
         RETURN result;
     END IF;
 
-    INSERT INTO bet_provider(id, name) VALUES (id, name);
+    INSERT INTO bet_provider(id, name) VALUES (id, name) RETURNING bet_provider.id, bet_provider.name INTO result;
     
     result.success := TRUE;
     result.error_code := 0;
@@ -55,3 +58,11 @@ BEGIN
             RETURN result;
 END;
 $$ language 'plpgsql';
+
+--
+-- Test inserts
+--
+/*
+    select * from insert_bet_provider(2, 'XXXXX', 'test');
+    select * from insert_bet_provider(7, 'XXXXX', 'test');
+*/
