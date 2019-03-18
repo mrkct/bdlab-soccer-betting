@@ -23,7 +23,9 @@ class Player{
             pg_prepare(
                 $db,
                 'Player_insert',
-                'SELECT success, error_code, message FROM insert_player($1, $2, $3, $4, $5, $6);'
+                'SELECT 
+                    id, name, birthday, height, weight, success, error_code, message 
+                 FROM insert_player($1, $2, $3, $4, $5, $6);'
             );
             $prepared = true;
         }
@@ -48,11 +50,10 @@ class Player{
 
     /**
      * Inserts a player in the database.
-     * Returns true on success, throws an exception in case of failure.
-     * Possible thrown exceptions are:
-     * - PermissionDeniedException
-     * - DuplicateDataException
-     * - DBException
+     * Returns an associative array with the newly inserted
+     * player on success, raises an exception if 
+     * an error occurs. Exception that can be thrown are:
+     * DuplicateDataException, PermissionDeniedException, DBException
      */
     public static function insert($db, $id, $name, $birthday, $height, $weight){
         $result = @pg_execute(
@@ -67,6 +68,12 @@ class Player{
         $row = pg_fetch_assoc($result);
         result_row_to_exception($row);
 
-        return true;
+        return array(
+            "id" => $row["id"],
+            "name" => $row["name"],
+            "birthday" => $row["birthday"],
+            "height" => $row["height"],
+            "weight" => $row["weight"]
+        );
     }
 }
