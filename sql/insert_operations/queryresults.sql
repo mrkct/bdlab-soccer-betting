@@ -33,10 +33,10 @@ CREATE TYPE MatchQR AS (
     season CHAR(9),
     stage INTEGER,
     played_on DATE,
-    hometeam_goals INTEGER,
-    awayteam_goals INTEGER,
     hometeam INTEGER,
     awayteam INTEGER,
+    hometeam_goals INTEGER,
+    awayteam_goals INTEGER,
     created_by INTEGER,
     -- Query result fields
     success BOOLEAN,
