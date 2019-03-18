@@ -1,6 +1,8 @@
 /**
- * Inserts a bet provider data and returns an integer representing the status
- * of the operation. Status codes are:
+ * Inserts a match data and returns a MatchQR containing all the fields
+ * in the match table, which will contain the newly inserted data if successfull,
+ * and 3 extra fields: success(boolean), error_code and message. A table of the possible
+ * error_codes follows:
  * 0    : OK
  * -1   : User is not allowed to insert
  * -2   : Duplicate row
@@ -18,10 +20,10 @@ CREATE OR REPLACE FUNCTION insert_match(
     awayteam INTEGER,
     hometeam_goals INTEGER,
     awayteam_goals INTEGER
-) RETURNS QueryResult AS $$
+) RETURNS MatchQR AS $$
 DECLARE
     current_collaborator soccer.collaborator%ROWTYPE;
-    result QueryResult;
+    result MatchQR;
 BEGIN
     IF collaborator_id IS NULL THEN
         result.success := FALSE;
@@ -48,7 +50,21 @@ BEGIN
         ) VALUES (
             id, league, season, stage, played_on, hometeam, awayteam, 
             hometeam_goals, awayteam_goals, collaborator_id
-        );
+        )
+        RETURNING
+            match.id, 
+            match.league, 
+            match.season, 
+            match.stage, 
+            match.played_on, 
+            match.hometeam, 
+            match.awayteam, 
+            match.hometeam_goals, 
+            match.awayteam_goals, 
+            match.created_by
+        INTO result;
+        -- Here we fix the serial id, since it probably got messed up by this insert
+        PERFORM setval('soccer.match_id_seq', COALESCE((SELECT MAX(match.id)+1 FROM match), 1), false);
     ELSE
         INSERT INTO match(
             league, season, stage, played_on, hometeam, awayteam, 
@@ -56,7 +72,19 @@ BEGIN
         ) VALUES (
             league, season, stage, played_on, hometeam, awayteam, 
             hometeam_goals, awayteam_goals, collaborator_id
-        );
+        )
+        RETURNING
+            match.id, 
+            match.league, 
+            match.season, 
+            match.stage, 
+            match.played_on, 
+            match.hometeam, 
+            match.awayteam, 
+            match.hometeam_goals, 
+            match.awayteam_goals, 
+            match.created_by
+        INTO result;
     END IF;
 
     result.success := TRUE;
@@ -78,3 +106,6 @@ BEGIN
             RETURN result;
 END;
 $$ language 'plpgsql';
+
+select * from insert_match(2, NULL, 1200, '1900/1901', 3, '1900-01-01', 9987, 9993, 1, 0);
+select * from insert_match(2, NULL, 1200, '1900/1901', 3, '1900-01-01', 9987, 9993, 1, 0)
