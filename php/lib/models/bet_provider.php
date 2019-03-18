@@ -25,7 +25,7 @@ class BetProvider{
             pg_prepare(
                 $db,
                 'BetProvider_insert',
-                'SELECT success, error_code, message 
+                'SELECT id, name, success, error_code, message 
                  FROM insert_bet_provider($1, $2, $3);'
             );
             $prepared = true;
@@ -49,11 +49,13 @@ class BetProvider{
             return NULL;
         }
     }
+
     /**
      * Inserts a bet provider in the database.
-     * Returns the inserted bet provider if success, NULL if the database does
-     * not support the RETURNING construct and can't return after an INSERT.
-     * Raises an exception if an error occurs.
+     * Returns an associative array with the newly inserted
+     * bet provider on success, raises an exception if 
+     * an error occurs. Exception that can be thrown are:
+     * DuplicateDataException, PermissionDeniedException, DBException
      */
     public static function insert($db, $id, $name){
         $result = @pg_execute(
@@ -67,6 +69,9 @@ class BetProvider{
         $row = pg_fetch_assoc($result);
         result_row_to_exception($row);
 
-        return true;
+        return array(
+            "id" => $row["id"],
+            "name" => $row["name"]
+        );
     }
 }
