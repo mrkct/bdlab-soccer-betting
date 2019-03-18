@@ -1,6 +1,8 @@
 /**
- * Inserts a league data and returns an integer representing the status
- * of the operation. Status codes are:
+ * Inserts a league data and returns a LeagueQR containing all the fields
+ * in the league table, which will contain the newly inserted data if successfull,
+ * and 3 extra fields: success(boolean), error_code and message. A table of the possible
+ * error_codes follows:
  * 0    : OK
  * -1   : User is not allowed to insert
  * -2   : Duplicate row
@@ -12,10 +14,10 @@ CREATE OR REPLACE FUNCTION insert_league(
     league_id INTEGER, 
     name VARCHAR(255), 
     country VARCHAR(255)
-) RETURNS QueryResult AS $$
+) RETURNS LeagueQR AS $$
 DECLARE
     current_collaborator soccer.collaborator%ROWTYPE;
-    result QueryResult;
+    result LeagueQR;
 BEGIN
     IF collaborator_id IS NULL THEN
         result.success := FALSE;
@@ -26,7 +28,7 @@ BEGIN
 
     SELECT * INTO current_collaborator 
     FROM collaborator 
-    WHERE id = collaborator_id;
+    WHERE collaborator.id = collaborator_id;
 
     IF NOT FOUND OR current_collaborator.role <> 'administrator' THEN
         result.success := FALSE;
@@ -36,9 +38,26 @@ BEGIN
     END IF;
 
     IF league_id IS NOT NULL THEN
-        INSERT INTO league(id, name, country) VALUES (league_id, name, country);
+        -- Even if it would be good we can't use a transaction here. Postgres doesn't support them in functions
+        INSERT 
+            INTO league(id, name, country) 
+            VALUES (league_id, name, country) 
+            RETURNING 
+                league.id, 
+                league.name, 
+                league.country 
+            INTO result;
+        -- Here we fix the serial id, since it probably got messed up by this insert
+        PERFORM setval('soccer.league_id_seq', COALESCE((SELECT MAX(id)+1 FROM league), 1), false);
     ELSE
-        INSERT INTO league(name, country) VALUES (name, country);
+        INSERT 
+            INTO league(name, country) 
+            VALUES (name, country) 
+            RETURNING 
+                league.id, 
+                league.name, 
+                league.country
+            INTO result;
     END IF;
     
     result.success := TRUE;
@@ -60,3 +79,8 @@ BEGIN
             RETURN result;
 END;
 $$ language 'plpgsql';
+
+-- Test inserts
+/**
+    select * from insert_league(2, NULL, 'new insert!', 'Italy');
+*/
