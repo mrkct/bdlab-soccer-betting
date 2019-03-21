@@ -40,8 +40,8 @@ class LoggedUser{
      * user is not logged
      */
     public static function getName(){
-        sessionPrepare();
-        return getKey('name');
+        LoggedUser::sessionPrepare();
+        return LoggedUser::getKey('name');
     }
 
     /**
@@ -50,6 +50,6 @@ class LoggedUser{
      */
     public static function getRole(){
         LoggedUser::sessionPrepare();
-        return getKey('role');
+        return LoggedUser::getKey('role');
     }
 }
