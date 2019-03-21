@@ -1,5 +1,6 @@
 <?php
     require_once('config.php');
+    require_once(LIB . '/utils.php');
     require_once(LIB . '/database.php');
     require_once(LIB . '/models/match.php');
     require_once(LIB . '/models/loggeduser.php');
@@ -9,11 +10,11 @@
     require_once(COMPONENTS . '/success-message.php');
     
     if( !$logged ){
-        header('location: ' . PAGES . '/login.php');
+        redirect(PAGE_LOGIN);
         exit();
     }
     if( $_SESSION['role'] == 'partner' ){
-        header('location: ' . PAGES . '/forbidden.php');
+        redirect(PAGE_FORBIDDEN);
         exit();
     }
 
@@ -66,7 +67,7 @@
     if( isset($_POST["league"]) ){
         try{
             Match::prepare($db);
-            Match::insert(
+            $match = Match::insert(
                 $db,
                 NULL,
                 $_POST["league"],
@@ -79,7 +80,7 @@
                 $_POST["awayteam_goals"],
                 LoggedUser::getId()
             );
-            $success = true;
+            redirect(PAGES . '/controlpanel/add/match_players.php?id=' . $match["id"]);
         }catch(PermissionDeniedException $e){
             $error = "You are not allowed to insert league's data";
         }catch(DuplicateDataException $e){
