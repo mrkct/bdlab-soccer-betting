@@ -23,7 +23,7 @@ class Team{
             pg_prepare(
                 $db, 
                 'Team_insert',
-                'SELECT success, error_code, message FROM insert_team($1, $2, $3, $4);'
+                'SELECT * FROM insert_team($1, $2, $3, $4);'
             );
             $prepared = true;
         }
@@ -48,11 +48,11 @@ class Team{
 
     /**
      * Inserts a team in the database.
-     * Returns true on success, raises an exception if
-     * an error occurs. Exceptions that can be thrown are:
-     * - DuplicateDataException
-     * - PermissionDeniedException
-     * - DBException
+     * Returns an associative array with the newly inserted
+     * team on success, raises an exception if 
+     * an error occurs. Exception that can be thrown are:
+     * DuplicateDataException, PermissionDeniedException, 
+     * DBException
      */
     public static function insert($db, $id, $shortname, $longname){
         $result = @pg_execute(
@@ -66,6 +66,10 @@ class Team{
         $row = pg_fetch_assoc($result);
         result_row_to_exception($row);
 
-        return true;
+        return array(
+            "id" => $row["id"],
+            "shortname" => $row["shortname"],
+            "longname" => $row["longname"]
+        );
     }
 }
