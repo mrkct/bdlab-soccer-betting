@@ -22,7 +22,7 @@
             $success = true;
         }
     } else {
-        $error = "The URL is missing the match id. You may have followed a bad link or copied the link wrong.";
+        $error = "The URL is missing the match id. You might have followed a bad link or copied the link wrong.";
     }
 ?>
 <!DOCTYPE html5>
