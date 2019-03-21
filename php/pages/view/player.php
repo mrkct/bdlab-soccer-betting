@@ -1,23 +1,22 @@
 <?php
-    define('ERR_MISSING_ID', 'MISSING ID IN URL');
-    define('ERR_UNKNOWN_PLAYER', 'UNKNOWN PLAYER');
     require_once('config.php'); 
+    require_once(LIB . '/database.php');
+    require_once(LIB . '/models/player.php');
+    require_once(COMPONENTS . '/error_message.php');
 
-    $error = null;
-
+    
     if( isset($_GET["id"]) ){
-        require_once(LIB . '/database.php');
-        require_once(LIB . '/models/player.php');
-
         $db = db_connect();
         Player::prepare($db);
 
         $player = Player::find($db, $_GET["id"]);
         if( $player == NULL ){
-            $error = ERR_UNKNOWN_PLAYER;
+            $error = "There is no player with that id";
+        } else {
+            $success = true;
         }
     } else {
-        $error = ERR_MISSING_ID;
+        $error = "The URL is missing the player id. You might have followed a bad link or copied the link wrong";
     }
 ?>
 <!DOCTYPE html5>
@@ -32,16 +31,12 @@
         <?php include(COMPONENTS . '/navbar.php'); ?>
         <div class="container">
             <?php
-                if( $error ):
-                    ?>
-                    <div class="notification is-danger">
-                        There was an error showing this page: <?php echo $error; ?>
-                    </div>
-                    <?php
-                endif;
+                if( isset($error) ){
+                    show_message_on_error($error);
+                }
             ?>
             <?php
-                if( !$error ):
+                if( isset($success) ):
                     ?>
                     <div class="player-card">
                         <div class="player-image">
