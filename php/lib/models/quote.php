@@ -31,7 +31,9 @@ class Quote{
             pg_prepare(
                 $db,
                 'Quote_insert',
-                'SELECT success, error_code, message 
+                'SELECT 
+                    match, bet_provider, home_quote, draw_quote, away_quote, created_by, 
+                    success, error_code, message 
                  FROM insert_quote($1, $2, $3, $4, $5, $6);'
             );
             $prepared = true;
@@ -74,6 +76,13 @@ class Quote{
         $row = pg_fetch_assoc($result);
         result_row_to_exception($row);
 
-        return true;
+        return array(
+            "match" => $row["match"], 
+            "bet_provider" => $row["bet_provider"], 
+            "home_quote" => $row["home_quote"], 
+            "draw_quote" => $row["draw_quote"], 
+            "away_quote" => $row["away_quote"], 
+            "created_by" => $row["created_by"] 
+        );
     }
 }
