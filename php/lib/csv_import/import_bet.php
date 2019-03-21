@@ -1,8 +1,10 @@
 <?php
-
 require_once(LIB . '/models/bet_provider.php');
 require_once(LIB . '/models/quote.php');
-require_once(LIB . '/csv_import/InvalidDataException.php');
+require_once(LIB . '/models/loggeduser.php');
+require_once(LIB . '/models/exceptions/DuplicateDataException.php');
+require_once(LIB . '/models/exceptions/DBException.php');
+
 
 /**
  * Reads all the betting providers id's from the file header
@@ -54,7 +56,7 @@ function bet_read_row($row, $providers){
 function bet_insert($db, $matchquotes){
     Quote::prepare($db);
     foreach(array_keys($matchquotes["quotes"]) as $provider){
-        if( Quote::find($db, $matchquotes["id"], $provider) == NULL ){
+        try{
             Quote::insert(
                 $db, 
                 $matchquotes["id"], 
@@ -62,9 +64,9 @@ function bet_insert($db, $matchquotes){
                 $matchquotes["quotes"][$provider]["home"],
                 $matchquotes["quotes"][$provider]["draw"],
                 $matchquotes["quotes"][$provider]["away"],
-                $_SESSION["id"]
+                LoggedUser::getId()
             );
-        }
+        }catch(DuplicateDataException $e){}
     }
 }
 
@@ -83,23 +85,21 @@ function bet_import($file, $db){
     $providers = read_providers($heading);
     BetProvider::prepare($db);
     foreach($providers as $provider){
-        if( BetProvider::find($db, $provider) == NULL ){
+        try{
             BetProvider::insert($db, $provider, NULL);
-        }
+        }catch(DuplicateDataException $e){}
     }
-
+    
     while($row = fgetcsv($file, 0, ",")){
         $match = bet_read_row($row, $providers);
         try{
             $counted_rows++;
             bet_insert($db, $match);
-        }catch(InvalidDataException $e){
-            $error_rows++;
-            array_push($error_log, array(
-                "line" => $counted_rows,
-                "message" => $e->getMessage()
-            ));
         }catch(DBException $e){
+            /**
+             * Note: We do not catch the singular exceptions because they
+             * all get treated the same way
+             */
             $error_rows++;
             array_push($error_log, array(
                 "line" => $counted_rows,

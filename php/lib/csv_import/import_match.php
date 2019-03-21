@@ -4,7 +4,7 @@ require_once(LIB . '/models/team.php');
 require_once(LIB . '/models/player.php');
 require_once(LIB . '/models/match.php');
 require_once(LIB . '/models/league.php');
-require_once(LIB . '/csv_import/InvalidDataException.php');
+require_once(LIB . '/models/exceptions/DuplicateDataException.php');
 
 /**
  * Given an array representing a match.csv row returns
@@ -69,23 +69,28 @@ function match_read_row($row){
  */
 function match_insert($db, $row){
     Team::prepare($db);
-    $hometeam = Team::find($db, $row["home_team"]["id"]);
-    if( $hometeam == NULL ){
+    $hometeam = null;
+    try{
         $hometeam = Team::insert(
             $db, 
             $row["home_team"]["id"],
             $row["home_team"]["short_name"],
             $row["home_team"]["long_name"]
         );
+    }catch(DuplicateDataException $e){
+        $hometeam = Team::find($db, $row["home_team"]["id"]);
     }
-    $awayteam = Team::find($db, $row["away_team"]["id"]);
-    if( $awayteam == NULL ){
+    
+    $awayteam = null;
+    try{
         $awayteam = Team::insert(
             $db, 
             $row["away_team"]["id"],
             $row["away_team"]["short_name"],
             $row["away_team"]["long_name"]
         );
+    }catch(DuplicateDataException $e){
+        $awayteam = Team::find($db, $row["away_team"]["id"]);
     }
     
     League::prepare($db);
@@ -98,7 +103,7 @@ function match_insert($db, $row){
     for($i = 0; $i < sizeof($row["home_team"]["players"]); $i++){
         if( $row["home_team"]["players"][$i]["id"] != NULL ){
             $player = $row["home_team"]["players"][$i];
-            if( Player::find($db, $player["id"]) == NULL ){
+            try{
                 Player::insert(
                     $db, 
                     $player["id"], 
@@ -107,11 +112,11 @@ function match_insert($db, $row){
                     $player["height"], 
                     $player["weight"]
                 );
-            }
+            }catch(DuplicateDataException $e){}
         }
         if( $row["away_team"]["players"][$i]["id"] != NULL ){
             $player = $row["away_team"]["players"][$i];
-            if( Player::find($db, $player["id"]) == NULL ){
+            try{
                 Player::insert(
                     $db, 
                     $player["id"], 
@@ -120,12 +125,12 @@ function match_insert($db, $row){
                     $player["height"], 
                     $player["weight"]
                 );
-            }
+            }catch(DuplicateDataException $e){}
         }
     }
 
     Match::prepare($db);
-    if( Match::find($db, $row["id"]) == NULL ){
+    try{
         Match::insert(
             $db, 
             $row["id"], 
@@ -139,7 +144,7 @@ function match_insert($db, $row){
             $row["away_team"]["goals"], 
             $_SESSION["id"]
         );
-    }
+    }catch(DuplicateDataException $e){}
 
     for($i = 0; $i < sizeof($row["home_team"]["players"]); $i++){
         $player = $row["home_team"]["players"][$i];

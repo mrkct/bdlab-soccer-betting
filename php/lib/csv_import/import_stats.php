@@ -1,7 +1,6 @@
 <?php
-
 require(LIB . '/models/stats.php');
-require_once(LIB . '/csv_import/InvalidDataException.php');
+
 
 /**
  * Takes a value and an array of accepted values.
@@ -84,7 +83,7 @@ function stats_read_row($row){
  */
 function stats_insert($db, $stats){
     Stats::prepare($db);
-    if( Stats::find($db, $stats['player'], $stats['attribute_date']) == NULL ){
+    try{
         Stats::insert(
             $db, 
             $stats['player'], 
@@ -128,7 +127,7 @@ function stats_insert($db, $stats){
             $stats['gk_positioning'],
             $stats['gk_reflexes']
         );
-    }
+    }catch(DuplicateDataException $e){}
 
     return true;
 }
@@ -149,12 +148,6 @@ function stats_import($file, $db){
         try{
             $counted_rows++;
             stats_insert($db, $stats);
-        }catch(InvalidDataException $e){
-            $error_rows++;
-            array_push($error_log, array(
-                "line" => $counted_rows,
-                "message" => $e->getMessage()
-            ));
         }catch(DBException $e){
             $error_rows++;
             array_push($error_log, array(
