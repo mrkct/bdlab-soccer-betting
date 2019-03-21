@@ -1,17 +1,12 @@
 <?php
-    define('ERR_MISSING_ID', 'MISSING ID IN URL');
-    define('ERR_UNKNOWN_MATCH', 'UNKNOWN MATCH');
     require_once('config.php');
+    require_once(LIB . '/database.php');
+    require_once(LIB . '/models/match.php');
+    require_once(LIB . '/models/team.php');
+    require_once(LIB . '/models/league.php');
     require_once(COMPONENTS . '/error_message.php'); 
 
-    $error = null;
-
     if( isset($_GET["id"]) ){
-        require_once(LIB . '/database.php');
-        require_once(LIB . '/models/match.php');
-        require_once(LIB . '/models/team.php');
-        require_once(LIB . '/models/league.php');
-
         $db = db_connect();
         Match::prepare($db);
         Team::prepare($db);
@@ -19,14 +14,15 @@
 
         $match = Match::find($db, $_GET["id"]);
         if( $match == NULL ){
-            $error = ERR_UNKNOWN_MATCH;
+            $error = "There is no match with that id";
         } else {
             $hometeam = Team::find($db, $match["hometeam"]);
             $awayteam = Team::find($db, $match["awayteam"]);
             $league = League::findById($db, $match["league"]);
+            $success = true;
         }
     } else {
-        $error = MISSING_ID;
+        $error = "The URL is missing the match id. You may have followed a bad link or copied the link wrong.";
     }
 ?>
 <!DOCTYPE html5>
@@ -40,7 +36,12 @@
         <?php require_once(COMPONENTS . '/logincheck.php'); ?>
         <?php include(COMPONENTS . '/navbar.php'); ?>
         <div class="container">
-            <?php show_message_on_error($error); ?>
+            <?php 
+                if( isset($error) ){
+                    show_message_on_error($error);
+                }
+            ?>
+            <?php if( isset($success) ): ?>
             <div class="match-result-panel">
                 <div class="match-info">
                     <div class="league-name">
@@ -259,6 +260,7 @@
                     </tbody>
                 </table>
             </div>
+            <?php endif; ?>
         </div>
         <?php
             function create_stats_row($player){
