@@ -1,23 +1,22 @@
 <?php
-    define('ERR_MISSING_ID', 'MISSING ID IN URL');
-    define('ERR_UNKNOWN_TEAM', 'UNKNOWN TEAM');
     require_once('config.php'); 
+    require_once(LIB . '/database.php');
+    require_once(LIB . '/models/team.php');
+    require_once(COMPONENTS . '/error_message.php');
 
-    $error = null;
 
     if( isset($_GET["id"]) ){
-        require_once(LIB . '/database.php');
-        require_once(LIB . '/models/team.php');
-
         $db = db_connect();
         Team::prepare($db);
 
         $team = Team::find($db, $_GET["id"]);
         if( $team == NULL ){
-            $error = ERR_UNKNOWN_TEAM;
+            $error = "There is no team with that id";
+        } else {
+            $success = true;
         }
     } else {
-        $error = ERR_MISSING_ID;
+        $error = "The URL is missing the player id. You might have followed a bad link or copied the link wrong";;
     }
 ?>
 <!DOCTYPE html5>
@@ -32,16 +31,12 @@
         <?php include(COMPONENTS . '/navbar.php'); ?>
         <div class="container">
             <?php
-                if( $error ):
-                    ?>
-                    <div class="notification is-danger">
-                        There was an error showing this page: <?php echo $error; ?>
-                    </div>
-                    <?php
-                endif;
+                if( isset($error) ){
+                    show_message_on_error($error);
+                }
             ?>
             <?php
-                if( !$error ):
+                if( isset($success) ):
                     ?>
                 <h1 class="title is-1">
                     <?php echo $team["longname"]; ?>(<?php echo $team["shortname"]; ?>)
