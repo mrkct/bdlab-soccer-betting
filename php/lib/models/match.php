@@ -50,7 +50,7 @@ class Match{
             pg_prepare(
                 $db,
                 'Match_insertPlayed',
-                'INSERT INTO played(player, match, team) VALUES ($1, $2, $3);'
+                'SELECT * FROM insert_played($1, $2, $3, $4);'
             );
             pg_prepare(
                 $db,
@@ -122,10 +122,14 @@ class Match{
 
     /**
      * Records that a player played with a team in a specific match.
-     * Returns true if success, raises an exception if an error occurs.
+     * Returns the inserted row on success, raises an exception on
+     * failure. Exceptions that can be thrown are:
+     * PermissionDeniedException, ForeignKeyException, DuplicateDataException,
+     * DBException
      */
     public static function insertPlayed($db, $player, $match, $team){
         $result = @pg_execute($db, 'Match_insertPlayed', array(
+            LoggedUser::getId(),
             $player,
             $match,
             $team
@@ -133,8 +137,14 @@ class Match{
         if( !$result ){
             throw new DBException(pg_last_error($db));
         }
+        $row = pg_fetch_assoc($result);
+        result_row_to_exception($row);
 
-        return true;
+        return array(
+            "player" => $row["player"],
+            "match" => $row["match"],
+            "team" => $row["team"]
+        );
     }
 
     /**
