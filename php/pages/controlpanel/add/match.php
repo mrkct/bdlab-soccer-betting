@@ -82,9 +82,9 @@
             );
             redirect(PAGES . '/controlpanel/add/match_players.php?id=' . $match["id"]);
         }catch(PermissionDeniedException $e){
-            $error = "You are not allowed to insert league's data";
+            $error = "You are not allowed to insert matches' data";
         }catch(DuplicateDataException $e){
-            $error = "There is already a league with that id";
+            $error = "That match is already in the databse";
         }catch(ForeignKeyException $e){
             $error = "There was an error with the selected league and teams. Reload this page and retry";
         }catch(DBException $e){
