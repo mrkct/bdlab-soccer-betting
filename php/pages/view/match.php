@@ -158,28 +158,38 @@
                     pg_prepare($db, 'get_quotes', 'SELECT * FROM quote WHERE match = $1;');
                     $result = pg_execute($db, 'get_quotes', array($match["id"]));
                 ?>
-                <table class="table is-striped is-bordered is-hoverable is-fullwidth">
-                    <thead>
-                        <th>Bet Provider</th>
-                        <th>Home team(<?php echo $hometeam["shortname"]; ?>) wins</th>
-                        <th>Match ends in draw</th>
-                        <th>Away team(<?php echo $awayteam["shortname"]; ?>) wins</th>
-                    </thead>
-                    <tbody>
-                        <?php
-                            while( $quote = pg_fetch_assoc($result) ):
+                <?php
+                    if( pg_num_rows($result) > 0 ): ?>
+                        <table class="table is-striped is-bordered is-hoverable is-fullwidth">
+                            <thead>
+                                <th>Bet Provider</th>
+                                <th>Home team(<?php echo $hometeam["shortname"]; ?>) wins</th>
+                                <th>Match ends in draw</th>
+                                <th>Away team(<?php echo $awayteam["shortname"]; ?>) wins</th>
+                            </thead>
+                            <tbody>
+                                <?php
+                                    while( $quote = pg_fetch_assoc($result) ):
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $quote["bet_provider"]; ?></td>
+                                            <td><?php echo $quote["home_quote"]; ?></td>
+                                            <td><?php echo $quote["draw_quote"]; ?></td>
+                                            <td><?php echo $quote["away_quote"]; ?></td>
+                                        </tr>
+                                <?php 
+                                    endwhile;
                                 ?>
-                                <tr>
-                                    <td><?php echo $quote["bet_provider"]; ?></td>
-                                    <td><?php echo $quote["home_quote"]; ?></td>
-                                    <td><?php echo $quote["draw_quote"]; ?></td>
-                                    <td><?php echo $quote["away_quote"]; ?></td>
-                                </tr>
-                        <?php 
-                            endwhile;
-                        ?>
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                <?php 
+                    endif;
+                    if( pg_num_rows($result) == 0 ): ?>
+                        <h4 class="title is-4 title-centered">
+                            There are no quotes available for this match
+                        </h4>
+                <?php
+                    endif; ?>
             </div>
             <hr>
             <div class="match-result-stats">
