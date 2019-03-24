@@ -61,6 +61,7 @@
 */
 .controlpanel-menu{
     max-width: 300px;
+    margin-top: 24px;
 }
 
 .controlpanel-form{
@@ -68,4 +69,8 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+.form-container{
+    margin-top: 24px;
 }
