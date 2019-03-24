@@ -131,7 +131,8 @@ CREATE TABLE IF NOT EXISTS match(
     awayteam INTEGER REFERENCES team(id),
     created_by INTEGER NOT NULL REFERENCES collaborator(id),
     CHECK (hometeam <> awayteam),
-    CHECK (stage > 0)
+    CHECK (stage > 0),
+    CONSTRAINT UNIQUE(league, stage, played_on, hometeam, awayteam)
 );
 
 CREATE TABLE IF NOT EXISTS played(
