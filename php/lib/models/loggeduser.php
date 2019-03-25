@@ -52,4 +52,13 @@ class LoggedUser{
         LoggedUser::sessionPrepare();
         return LoggedUser::getKey('role');
     }
+
+    /**
+     * Returns the logged user's affiliation or
+     * NULL if they don't have one
+     */
+    public static function getAffiliation(){
+        LoggedUser::sessionPrepare();
+        return LoggedUser::getKey('affiliation');
+    }
 }
