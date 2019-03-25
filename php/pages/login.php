@@ -9,6 +9,7 @@
             $_SESSION['name'] = $user['name'];
             $_SESSION['id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
+            $_SESSION['affiliation'] = $user['affiliation'];
             header("location: /bdlab/");
         }
     }
