@@ -1,28 +1,26 @@
 <?php
     require_once('config.php');
+    require_once(LIB . '/database.php');
+    require_once(LIB . '/models/loggeduser.php');
+    require_once(LIB . '/utils.php');
     require_once(COMPONENTS . '/logincheck.php');
     if( !$logged ){
-        header('location: ' . PAGES . '/login.php');
+        redirect(PAGE_LOGIN);
         exit();
     }
 
-    require_once(LIB . '/database.php');
-    $db = db_connect();
-    pg_prepare(
-        $db, 
-        'get_user', 
-        'SELECT 
-            collaborator.id AS collaborator_id, 
-            collaborator.name AS collaborator_name, 
-            collaborator.role AS collaborator_role, 
-            bet_provider.id AS bet_provider_id,
-            bet_provider.name AS bet_provider_name
-        FROM collaborator 
-        LEFT JOIN bet_provider ON bet_provider.id = collaborator.affiliation
-        WHERE collaborator.id = $1;'
-    );
-    $result = pg_execute($db, 'get_user', array($_SESSION['id']));
-    $result = pg_fetch_assoc($result);
+    if( LoggedUser::getAffiliation() != NULL ){
+        $db = db_connect();
+        pg_prepare(
+            $db, 
+            'get_user', 
+            'SELECT name AS betprovider_name
+            FROM bet_provider 
+            WHERE id = $1;'
+        );
+        $result = pg_execute($db, 'get_user', array(LoggedUser::getAffiliation()));
+        $result = pg_fetch_assoc($result);
+    }
 ?>
 <!DOCTYPE html>
 <html class="has-background-light full-height">
@@ -37,16 +35,23 @@
                 <?php require_once(COMPONENTS . '/controlpanel-menu.php'); ?>
                 <div class="container column is-three-quarters form-container">
                     <h2 class="title is-2 title-centered">Your account</h2>
-                    <div class="user-info">
-                        <b>User id:</b>
-                        <?php echo $result["collaborator_id"]; ?><br>
-                        <b>Name:</b>
-                        <?php echo $result["collaborator_name"]; ?><br>
+                    <div class="user-info notification is-primary">
+                        <h3 class="title is-3"><?php echo LoggedUser::getName(); ?></h3>
+                        <strong>User id:</strong>
+                        <?php echo LoggedUser::getId(); ?><br>
                         <b>Role:</b>
-                        <?php echo $result["collaborator_role"]; ?><br>
+                        <?php echo LoggedUser::getRole(); ?><br>
                         <b>Affiliated with:</b>
                         <?php
-                            echo $result["bet_provider_name"]? $result["bet_provider_name"] : "None";
+                            if( LoggedUser::getAffiliation() == NULL ){
+                                echo "None";
+                            } else {
+                                if( $result["betprovider_name"] == NULL ){
+                                    echo LoggedUser::getAffiliation();
+                                } else {
+                                    echo $result["betprovider_name"];
+                                }
+                            }
                         ?>
                     </div>
                 </div>
@@ -54,7 +59,7 @@
         </div>
         <style>
             .user-info{
-                font-size: 24px;
+                font-size: 20px;
             }
         </style>
     </body>
