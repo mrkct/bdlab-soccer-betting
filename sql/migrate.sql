@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS player(
 );
 
 CREATE TABLE IF NOT EXISTS stats(
-    player INTEGER REFERENCES player(id),
+    player INTEGER REFERENCES player(id) ON UPDATE CASCADE ON DELETE CASCADE,
     attribute_date DATE NOT NULL,
     overall_rating INTEGER,
     potential INTEGER,
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS collaborator(
     role VARCHAR(50) NOT NULL ,
     name VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    affiliation VARCHAR(5) REFERENCES bet_provider(id),
+    affiliation VARCHAR(5) REFERENCES bet_provider(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CHECK (role IN ('administrator', 'operator', 'partner')),
     CHECK (
         (affiliation IS NOT NULL AND role = 'partner') OR 
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS collaborator(
 
 CREATE TABLE IF NOT EXISTS match(
     id SERIAL PRIMARY KEY,
-    league INTEGER REFERENCES league(id),
+    league INTEGER REFERENCES league(id) ON UPDATE CASCADE ON DELETE CASCADE,
     season CHAR(9),
     stage INTEGER NOT NULL,
     played_on DATE NOT NULL,
@@ -129,27 +129,27 @@ CREATE TABLE IF NOT EXISTS match(
     awayteam_goals INTEGER NOT NULL CHECK (awayteam_goals >= 0),
     hometeam INTEGER REFERENCES team(id),
     awayteam INTEGER REFERENCES team(id),
-    created_by INTEGER NOT NULL REFERENCES collaborator(id),
+    created_by INTEGER NOT NULL REFERENCES collaborator(id) ON UPDATE CASCADE ON DELETE SET NULL,
     CHECK (hometeam <> awayteam),
     CHECK (stage > 0),
-    CONSTRAINT UNIQUE(league, stage, played_on, hometeam, awayteam)
+    UNIQUE(league, stage, played_on, hometeam, awayteam)
 );
 
 CREATE TABLE IF NOT EXISTS played(
-    player INTEGER REFERENCES player(id),
-    match INTEGER REFERENCES match(id),
-    team INTEGER NOT NULL REFERENCES team(id),
+    player INTEGER REFERENCES player(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    match INTEGER REFERENCES match(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    team INTEGER NOT NULL REFERENCES team(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY(player, match)
 );
 
 CREATE TABLE IF NOT EXISTS quote(
-    match INTEGER REFERENCES match(id),
-    bet_provider VARCHAR(5) REFERENCES bet_provider(id),
+    match INTEGER REFERENCES match(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    bet_provider VARCHAR(5) REFERENCES bet_provider(id) ON UPDATE CASCADE ON DELETE CASCADE,
     home_quote DOUBLE PRECISION NOT NULL,
     draw_quote DOUBLE PRECISION NOT NULL,
-    away_quote DOUBLE PRECISION NOT NULL,
-    created_by INTEGER NOT NULL REFERENCES collaborator(id),
-    PRIMARY KEY(match, bet_provider),
+    away_quote DOUBLE PRECISION NOT NULL, 
+    created_by INTEGER NOT NULL REFERENCES collaborator(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    PRIMARY KEY(match, bet_provider)
 );
 
 COMMIT;
