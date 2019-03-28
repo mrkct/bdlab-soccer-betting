@@ -1,5 +1,6 @@
 <?php
     require_once('config.php');
+    require_once(LIB . '/utils.php');
     require_once(LIB . '/database.php');
     require_once(LIB . '/models/match.php');
     require_once(LIB . '/models/team.php');
@@ -48,7 +49,7 @@
                         <?php echo $league["name"]; ?> Season <?php echo $match["season"]; ?>
                     </div>
                     <div class="match-date">
-                        <?php echo "Stage ", $match["stage"], ", ", date("d/m/Y", strtotime($match["played_on"])); ?>
+                        <?php echo "Stage ", $match["stage"], ", ", format_date($match["played_on"]); ?>
                     </div>
                 </div>
                 <div class="match-teams columns">

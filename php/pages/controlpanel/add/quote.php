@@ -226,7 +226,7 @@
                     <form method="POST" class="controlpanel-form">
                         <div class="notification is-primary">
                             <strong>Match ID: </strong><?php echo $match["id"]; ?><br>
-                            <strong>Played on: </strong><?php echo $match["played_on"]; ?><br>
+                            <strong>Played on: </strong><?php echo format_date($match["played_on"]); ?><br>
                             <strong>League: </strong><?php echo $league["name"]; ?><br>
                             <strong>Season: </strong><?php echo $match["season"]; ?>  <strong>Stage: </strong><?php echo $match["stage"]; ?><br>
                             <strong>Teams: </strong><?php echo $hometeam["longname"], " - ", $awayteam["longname"]; ?><br>

@@ -17,3 +17,16 @@
     function redirect($page){
         header('location: ' . $page);
     }
+
+    /**
+     * format_date($date)
+     * $date: A string with a date in this format year-month-day
+     * Shorthand for calling date_create and then date_format. Returns
+     * a string with the date in the european format dd/mm/yyyy
+     */
+    function format_date($date){
+        return date_format(
+            date_create("2013-03-15"), 
+            "d/m/Y"
+        );
+    }
