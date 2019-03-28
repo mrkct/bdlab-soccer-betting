@@ -18,3 +18,12 @@ CREATE MATERIALIZED VIEW rankings AS(
         )
     GROUP BY P.league, P.season, P.team
 );
+
+CREATE OR REPLACE FUNCTION refresh_rankings() RETURNS TRIGGER AS $$ 
+BEGIN
+    REFRESH MATERIALIZED VIEW rankings;
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+CREATE TRIGGER trg_refresh_rankings AFTER INSERT OR UPDATE OR DELETE ON match FOR EACH STATEMENT EXECUTE PROCEDURE refresh_rankings();
