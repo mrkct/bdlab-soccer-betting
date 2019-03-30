@@ -25,6 +25,11 @@ class Team{
                 'Team_insert',
                 'SELECT * FROM insert_team($1, $2, $3, $4);'
             );
+            pg_prepare(
+                $db,
+                'Team_delete',
+                'SELECT * FROM delete_team($1, $2);'
+            );
             $prepared = true;
         }
     }
@@ -55,17 +60,31 @@ class Team{
      * DBException
      */
     public static function insert($db, $id, $shortname, $longname){
-        $result = @pg_execute(
+        $row = execute_query(
             $db, 
             'Team_insert', 
             array(LoggedUser::getId(), $id, $shortname, $longname)
         );
-        if( !$result ){
-            throw new DBException(pg_last_error($db));
-        }
-        $row = pg_fetch_assoc($result);
-        result_row_to_exception($row);
 
+        return Team::rowToArray($row);
+    }
+
+    /**
+     * Deletes the team row with the passed id
+     * and returns it on success. Throws an exception
+     * on failure.
+     */
+    public static function delete($db, $id){
+        $row = execute_query($db, 'Team_insert', array(LoggedUser::getId(), $id));
+        return Team::rowToArray($row);
+    }
+
+    /**
+     * Takes an associative array for a database row
+     * and returns another associative array with all
+     * the useless parameters filtered
+     */
+    private static function rowToArray($row){
         return array(
             "id" => $row["id"],
             "shortname" => $row["shortname"],
