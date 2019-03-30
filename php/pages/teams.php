@@ -16,7 +16,7 @@
     $total_teams = pg_fetch_row($count_result)[0];
     $total_pages = ceil($total_teams / $pagesize);
     
-    $page = min($page, $total_pages);
+    $page = max(1, min($page, $total_pages));
     $offset = ($page-1) * $pagesize;
     pg_prepare(
         $db, 
