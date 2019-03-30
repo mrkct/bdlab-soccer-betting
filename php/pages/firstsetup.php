@@ -24,7 +24,7 @@
                         '/most_recent_stats.sql',
                         '/get_match_mvp.sql',
                         '/rankings.sql',
-                        '/insert_operations/queryresults.sql',
+                        '/queryresults.sql',
                         '/insert_operations/insert_betprovider.sql',
                         '/insert_operations/insert_league.sql',
                         '/insert_operations/insert_match.sql',
@@ -32,7 +32,15 @@
                         '/insert_operations/insert_player.sql',
                         '/insert_operations/insert_quote.sql',
                         '/insert_operations/insert_stats.sql',
-                        '/insert_operations/insert_team.sql'
+                        '/insert_operations/insert_team.sql',
+                        '/delete_operations/delete_betprovider.sql',
+                        '/delete_operations/delete_league.sql',
+                        '/delete_operations/delete_match.sql',
+                        '/delete_operations/delete_played.sql',
+                        '/delete_operations/delete_player.sql',
+                        '/delete_operations/delete_quote.sql',
+                        '/delete_operations/delete_stats.sql',
+                        '/delete_operations/delete_team.sql'
                     );
 
                     foreach($sqlfiles as $filepath){
