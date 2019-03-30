@@ -14,7 +14,7 @@ require_once(LIB . '/models/exceptions/PermissionDeniedException.php');
  * embedded message
  */
 function result_row_to_exception($resultrow){
-    if( $resultrow['success'] == 'f' || !$resultrow['success'] ){
+    if( isset($resultrow['success']) && ($resultrow['success'] == 'f' || !$resultrow['success'] )){
         switch( $resultrow['error_code'] ){
         case -1:
             throw new PermissionDeniedException($resultrow['message']);
@@ -30,4 +30,20 @@ function result_row_to_exception($resultrow){
             break;
         }
     }
+}
+
+/**
+ * Executes a prepared statement and throws an exception on failure.
+ * $db: The database connection to execute the query on
+ * $queryName: The name of the prepared statement
+ * $parameters: An array of parameters to pass to the query
+ */
+function execute_query($db, $queryName, $parameters){
+    $result = @pg_execute($db, $queryName, $parameters);
+    if( !$result ){
+        throw new DBException(pg_last_error($db));
+    }
+    $row = pg_fetch_assoc($result);
+    result_row_to_exception($row);
+    return $row;
 }
