@@ -71,6 +71,11 @@ class Stats{
                     $35, $36, $37, $38, $39, $40, $41
                 );'
             );
+            pg_prepare(
+                $db,
+                'Stats_delete',
+                'SELECT * FROM delete_stats($1, $2, $3);'
+            );
             $prepared = true;
         }
     }
@@ -115,7 +120,7 @@ class Stats{
         $sliding_tackle, $gk_diving, $gk_handling,
         $gk_kicking, $gk_positioning, $gk_reflexes
     ){
-        $result = @pg_execute($db, 'Stats_insert', array(
+        $row = execute_query($db, 'Stats_insert', array(
             LoggedUser::getId(),
             $player, $attribute_date, $overall_rating,
             $potential, $preferred_foot, $attacking_work_rate,
@@ -131,12 +136,20 @@ class Stats{
             $gk_kicking, $gk_positioning, $gk_reflexes
         ));
 
-        if( !$result ){
-            throw new DBException(pg_last_error($db));
-        }
-        $row = pg_fetch_assoc($result);
-        result_row_to_exception($row);
+        return Stats::rowToArray($row);
+    }
 
+    public static function delete($db, $player, $attribute_date){
+        $row = execute_query($db, 'Stats_delete', array(LoggedUser::getId(), $player, $attribute_date));
+        return $row;
+    }
+
+    /**
+     * Takes an associative array for a database row
+     * and returns another associative array with all
+     * the useless parameters filtered
+     */
+    private static function rowToArray($row){
         return array(
             "player" => $row["player"],
             "attribute_date" => $row["attribute_date"],

@@ -49,6 +49,11 @@ class Match{
             );
             pg_prepare(
                 $db,
+                'Match_delete',
+                'SELECT * FROM delete_match($1, $2);'
+            );
+            pg_prepare(
+                $db,
                 'Match_insertPlayed',
                 'SELECT * FROM insert_played($1, $2, $3, $4);'
             );
@@ -89,7 +94,7 @@ class Match{
      */
     public static function insert($db, $id, $league, $season, $stage, $played_on, $hometeam,
                                   $awayteam, $hometeam_goals, $awayteam_goals, $created_by){
-        $result = @pg_execute($db, 'Match_insert', array(
+        $row = execute_query($db, 'Match_insert', array(
             LoggedUser::getId(),
             $id,
             $league,
@@ -101,12 +106,63 @@ class Match{
             $hometeam_goals,
             $awayteam_goals
         ));
-        if( !$result ){
-            throw new DBException(pg_last_error($db));
-        }
-        $row = pg_fetch_assoc($result);
-        result_row_to_exception($row);
+        return Match::matchRowToArray($row);
+    }
 
+    /**
+     * Deletes the match row with the passed id
+     * and returns it on success. Throws an exception
+     * on failure.
+     */
+    public static function delete($db, $id){
+        $row = execute_query($db, 'Match_delete', array(LoggedUser::getId(), $id));
+        return Match::matchRowToArray($row);
+    }
+
+    /**
+     * Records that a player played with a team in a specific match.
+     * Returns the inserted row on success, raises an exception on
+     * failure. Exceptions that can be thrown are:
+     * PermissionDeniedException, ForeignKeyException, DuplicateDataException,
+     * DBException
+     */
+    public static function insertPlayed($db, $player, $match, $team){
+        $row = execute_query($db, 'Match_insertPlayed', array(
+            LoggedUser::getId(),
+            $player,
+            $match,
+            $team
+        ));
+
+        return Match::playedRowToArray($row);
+    }
+
+    /**
+     * Returns if a row with the passed arguments exists in the 'played' table.
+     * Returns true if a row exists, false otherwise. Raises an exception
+     * if an error occurs.
+     */
+    public static function playedExists($db, $player, $match, $team){
+        $row = execute_query($db, 'Match_playedExists', array($player, $match, $team)); 
+        return $row != NULL;
+    }
+
+    /**
+     * Deletes the played row with the passed id
+     * and returns it on success. Throws an exception
+     * on failure.
+     */
+    public static function deletePlayed($db, $player, $match){
+        $row = execute_query($db, 'Match_deletePlayed', array(LoggedUser::getId(), $player, $match));
+        return Match::playedRowToArray($row);
+    }
+
+    /**
+     * Takes an associative array for a database row
+     * and returns another associative array with all
+     * the useless parameters filtered
+     */
+    private static function matchRowToArray($row){
         return array(
             "id" => $row["id"],
             "league" => $row["league"],
@@ -121,51 +177,15 @@ class Match{
     }
 
     /**
-     * Records that a player played with a team in a specific match.
-     * Returns the inserted row on success, raises an exception on
-     * failure. Exceptions that can be thrown are:
-     * PermissionDeniedException, ForeignKeyException, DuplicateDataException,
-     * DBException
+     * Takes an associative array for a database row
+     * and returns another associative array with all
+     * the useless parameters filtered
      */
-    public static function insertPlayed($db, $player, $match, $team){
-        $result = @pg_execute($db, 'Match_insertPlayed', array(
-            LoggedUser::getId(),
-            $player,
-            $match,
-            $team
-        ));
-        if( !$result ){
-            throw new DBException(pg_last_error($db));
-        }
-        $row = pg_fetch_assoc($result);
-        result_row_to_exception($row);
-
+    private static function playedRowToArray($row){
         return array(
             "player" => $row["player"],
             "match" => $row["match"],
             "team" => $row["team"]
         );
-    }
-
-    /**
-     * Returns if a row with the passed arguments exists in the 'played' table.
-     * Returns true if a row exists, false otherwise. Raises an exception
-     * if an error occurs.
-     */
-    public static function playedExists($db, $player, $match, $team){
-        $result = @pg_execute($db, 'Match_playedExists', array(
-            $player,
-            $match,
-            $team
-        ));
-        if( !$result ){
-            throw new DBException(pg_last_error($db));
-        }
-
-        if( pg_fetch_assoc($result) ){
-            return true;
-        } else {
-            return false;
-        }
     }
 }

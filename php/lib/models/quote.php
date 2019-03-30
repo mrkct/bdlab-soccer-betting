@@ -36,6 +36,11 @@ class Quote{
                     success, error_code, message 
                  FROM insert_quote($1, $2, $3, $4, $5, $6);'
             );
+            pg_prepare(
+                $db,
+                'Quote_delete',
+                'SELECT * FROM delete_quote($1, $2, $3);'
+            );
             $prepared = true;
         }
     }
@@ -65,17 +70,31 @@ class Quote{
      * Raises an exception if an error occurs.
      */
     public static function insert($db, $match, $bet_provider, $home_quote, $draw_quote, $away_quote, $created_by){
-        $result = @pg_execute(
+        $row = execute_query(
             $db, 
             'Quote_insert', 
             array(LoggedUser::getId(), $match, $bet_provider, $home_quote, $draw_quote, $away_quote)
         );
-        if( !$result ){
-            throw new DBException(pg_last_error($db));
-        } 
-        $row = pg_fetch_assoc($result);
-        result_row_to_exception($row);
 
+        return Quote::rowToArray($row);
+    }
+
+    /**
+     * Deletes the quote row with the passed id
+     * and returns it on success. Throws an exception
+     * on failure.
+     */
+    public static function delete($db, $match, $bet_provider){
+        $row = execute_query($db, 'Quote_delete', array(LoggedUser::getId(), $match, $bet_provider));
+        return Quote::rowToArray($row);
+    }
+
+    /**
+     * Takes an associative array for a database row
+     * and returns another associative array with all
+     * the useless parameters filtered
+     */
+    private static function rowToArray($row){
         return array(
             "match" => $row["match"], 
             "bet_provider" => $row["bet_provider"], 

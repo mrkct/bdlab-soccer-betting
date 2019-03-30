@@ -28,6 +28,11 @@ class BetProvider{
                 'SELECT id, name, success, error_code, message 
                  FROM insert_bet_provider($1, $2, $3);'
             );
+            pg_prepare(
+                $db,
+                'BetProvider_delete',
+                'SELECT * FROM delete_bet_provider($1, $2);'
+            );
             $prepared = true;
         }
     }
@@ -69,6 +74,30 @@ class BetProvider{
         $row = pg_fetch_assoc($result);
         result_row_to_exception($row);
 
+        return BetProvider::rowToArray($row);
+    }
+
+    /**
+     * Deletes the bet provider row with the passed id
+     * and returns it on success. Throws an exception
+     * on failure.
+     */
+    public static function delete($db, $id){
+        $row = execute_query(
+            $db,
+            'BetProvider_delete',
+            array(LoggedUser::getId(), $id)
+        );
+
+        return BetProvider::rowToArray($row);
+    }
+
+    /**
+     * Takes an associative array for a database row
+     * and returns another associative array with all
+     * the useless parameters filtered
+     */
+    private static function rowToArray($row){
         return array(
             "id" => $row["id"],
             "name" => $row["name"]
