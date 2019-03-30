@@ -34,6 +34,8 @@ function result_row_to_exception($resultrow){
 
 /**
  * Executes a prepared statement and throws an exception on failure.
+ * DO NOT USE THIS OUTSIDE OF THE MODELS. IT WAS CREATED SPECIFICALLY
+ * TO AVOID COPY AND PASTE CODE THERE.
  * $db: The database connection to execute the query on
  * $queryName: The name of the prepared statement
  * $parameters: An array of parameters to pass to the query
