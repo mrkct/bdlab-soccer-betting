@@ -1,5 +1,9 @@
 <?php
 
+define('ROLE_ADMIN', 'administrator');
+define('ROLE_OPERATOR', 'operator');
+define('ROLE_PARTNER', 'partner');
+
 /**
  * A helper class for the data in the $_SESSION superglobal
  * for an already logged in user
