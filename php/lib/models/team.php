@@ -75,7 +75,7 @@ class Team{
      * on failure.
      */
     public static function delete($db, $id){
-        $row = execute_query($db, 'Team_insert', array(LoggedUser::getId(), $id));
+        $row = execute_query($db, 'Team_delete', array(LoggedUser::getId(), $id));
         return Team::rowToArray($row);
     }
 
