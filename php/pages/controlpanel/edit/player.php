@@ -29,7 +29,8 @@
         }
     }
 
-    if( isset($_POST["action"]) && isset($_POST["id"]) ){
+    if( isset($_POST["action"]) && isset($_POST["id"]) && isset($_POST["old_id"]) ){
+        Player::prepare($db);
         if( $_POST["action"] == ACTION_DELETE ){
             try{
                 Player::delete($db, $_POST["id"]);
@@ -41,10 +42,17 @@
             }
             
         } else if ( $_POST["action"] == ACTION_EDIT ){
-            if( isset($_POST["longname"]) && isset($_POST["shortname"]) ){
+            if( isset($_POST["name"]) && isset($_POST["birthday"]) && isset($_POST["height"]) && isset($_POST["weight"]) ){
                 try{
-                    // TODO: Edit the player data
-                    // Player::edit($db, ...)
+                    $player = Player::edit(
+                        $db, 
+                        $_POST["old_id"],
+                        $_POST["id"],
+                        $_POST["name"],
+                        $_POST["birthday"],
+                        $_POST["height"],
+                        $_POST["weight"]
+                    );
                     $success = true;
                 }catch(PermissionDeniedException $e){
                     $error = "You are not allowed to edit players data";
@@ -95,6 +103,7 @@
                             <h2 class="title is-2 title-centered">Edit Player</h2>
                             <form method="POST" class="controlpanel-form">
                                 <input type="hidden" name="action" value="<?php echo ACTION_EDIT; ?>" />
+                                <input type="hidden" name="old_id" value="<?php echo $player["id"]; ?>" />
                                 <div class="field">
                                     <label class="label">Player's ID</label>
                                     <div class="control">

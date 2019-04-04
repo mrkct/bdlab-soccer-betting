@@ -32,6 +32,11 @@ class Player{
                 'Player_delete',
                 'SELECT * FROM delete_player($1, $2);'
             );
+            pg_prepare(
+                $db,
+                'Player_edit',
+                "SELECT * FROM edit_player($1, $2, $3, $4, $5, $6, $7);"
+            );
             $prepared = true;
         }
     }
@@ -73,9 +78,39 @@ class Player{
      * Deletes the player row with the passed id
      * and returns it on success. Throws an exception
      * on failure.
+     * @param db: A valid database connection
+     * @param id: The id of the row to delete
      */
     public static function delete($db, $id){
         $row = execute_query($db, 'Player_delete', array(LoggedUser::getId(), $id));
+        return Player::rowToArray($row);
+    }
+
+    /**
+     * Edits a player row based on the passed id.
+     * Returns the newly edited row on success. Throws an
+     * exception on failure
+     * @param db: A valid database connection
+     * @param id: The id of the row to edit
+     * @param new_id: New id value of the row
+     * @param new_birthday: New birthday value of the row
+     * @param new_height: New height value of the row
+     * @param new_weight: New weight value of the row
+     */
+    public static function edit($db, $id, $new_id, $new_name, $new_birthday, $new_height, $new_weight){
+        $row = execute_query(
+            $db, 
+            'Player_edit', 
+            array(
+                LoggedUser::getId(), 
+                $id, 
+                $new_id, 
+                $new_name, 
+                $new_birthday, 
+                $new_height, 
+                $new_weight
+            )
+        );
         return Player::rowToArray($row);
     }
 
