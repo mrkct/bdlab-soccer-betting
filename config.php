@@ -21,6 +21,7 @@
     define('IMAGES', '/bdlab/images');
 
     // Useful pages for redirects
+    define('PAGE_HOME', '/bdlab');
     define('PAGE_LOGIN', PAGES . '/login.php');
     define('PAGE_FORBIDDEN', PAGES . '/forbidden.php');
 ?>

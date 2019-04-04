@@ -1,12 +1,13 @@
 <?php
     require_once('config.php');
+    require_once(LIB . '/utils.php');
     require_once(LIB . '/models/player.php');
     require_once(LIB . '/models/stats.php');
     require_once(COMPONENTS . '/logincheck.php');
     require_once(COMPONENTS . '/error_message.php');
     
     if( !$logged ){
-        header('location: ' . PAGES . '/login.php');
+        redirect(PAGE_LOGIN);
         exit();
     }
     

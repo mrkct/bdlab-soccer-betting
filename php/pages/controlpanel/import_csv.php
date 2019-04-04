@@ -1,8 +1,11 @@
 <?php
     require_once('config.php');
+    require_once(LIB . '/utils.php');
     require_once(COMPONENTS . '/logincheck.php');
+    
+    
     if( !$logged ){
-        header('location: /bdlab/php/login.php');
+        redirect(PAGE_LOGIN);
         exit();
     }
 
