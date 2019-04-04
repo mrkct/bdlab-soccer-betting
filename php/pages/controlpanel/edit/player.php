@@ -47,9 +47,9 @@
                     // Player::edit($db, ...)
                     $success = true;
                 }catch(PermissionDeniedException $e){
-                    $error = "You are not allowed to edit teams data";
+                    $error = "You are not allowed to edit players data";
                 }catch(DuplicateDataException $e){
-                    $error = "There is already a team with that id";
+                    $error = "There is already a player with that id";
                 }catch(DBException $e){
                     $error = "An unknown error occurred[" . $e->getMessage() . "]";
                 }
