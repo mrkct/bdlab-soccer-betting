@@ -1,11 +1,8 @@
 <?php
     require_once('config.php');
-    if( !isset($_SESSION) ){
-        session_start();
-    }
-    $_SESSION['logged'] = false;
-    unset($_SESSION['name']);
-    unset($_SESSION['role']);
+    require_once(LIB . '/auth.php');
+
+    logout();
 ?>
 <!DOCTYPE html>
 <html class="has-background-light full-height">

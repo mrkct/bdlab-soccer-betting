@@ -1,15 +1,11 @@
 <?php
     require_once('config.php');
+    require_once(LIB . '/utils.php');
     require_once(LIB . '/auth.php');
 
     if( isset($_POST['name']) && isset($_POST['password'])){
         if( $user = verify_login($_POST['name'], $_POST['password']) ){
-            session_start();
-            $_SESSION['logged'] = true;
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['affiliation'] = $user['affiliation'];
+            save_login($user["id"], $user["name"], $user["role"], $user["affiliation"]);
             redirect(PAGE_HOME);    
         }
     }
