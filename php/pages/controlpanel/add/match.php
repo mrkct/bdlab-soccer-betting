@@ -6,8 +6,7 @@
     require_once(LIB . '/models/loggeduser.php');
     require_once(COMPONENTS . '/logincheck.php');
     require_once(COMPONENTS . '/paginated-select.php');
-    require_once(COMPONENTS . '/error_message.php');
-    require_once(COMPONENTS . '/success-message.php');
+    require_once(COMPONENTS . '/messages.php');
     
     if( !$logged ){
         redirect(PAGE_LOGIN);
@@ -241,10 +240,10 @@
                         </div>
                         <?php
                             if( isset($success) ){
-                                show_success_message("Match added successfully");
+                                create_message("Match added successfully", MSG_SUCCESS);
                             }
                             if( isset($error) ){
-                                show_message_on_error($error);
+                                create_message($error, MSG_ERROR);
                             }
                         ?>
                     </form>

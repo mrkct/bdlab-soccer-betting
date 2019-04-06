@@ -2,7 +2,7 @@
     require_once('config.php'); 
     require_once(LIB . '/database.php');
     require_once(LIB . '/models/player.php');
-    require_once(COMPONENTS . '/error_message.php');
+    require_once(COMPONENTS . '/messages.php');
 
     
     if( isset($_GET["id"]) ){
@@ -32,7 +32,7 @@
         <div class="container">
             <?php
                 if( isset($error) ){
-                    show_message_on_error($error);
+                    create_message($error, MSG_ERROR);
                 }
             ?>
             <?php

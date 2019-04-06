@@ -5,7 +5,7 @@
     require_once(LIB . '/models/match.php');
     require_once(LIB . '/models/team.php');
     require_once(LIB . '/models/league.php');
-    require_once(COMPONENTS . '/error_message.php'); 
+    require_once(COMPONENTS . '/messages.php');
 
     if( isset($_GET["id"]) ){
         $db = db_connect();
@@ -39,7 +39,7 @@
         <div class="container">
             <?php 
                 if( isset($error) ){
-                    show_message_on_error($error);
+                    create_message($error, MSG_ERROR);
                 }
             ?>
             <?php if( isset($success) ): ?>

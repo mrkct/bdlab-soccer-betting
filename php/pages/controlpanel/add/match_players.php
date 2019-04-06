@@ -7,8 +7,7 @@
     require_once(LIB . '/models/loggeduser.php');
     require_once(COMPONENTS . '/logincheck.php');
     require_once(COMPONENTS . '/paginated-select.php');
-    require_once(COMPONENTS . '/error_message.php');
-    require_once(COMPONENTS . '/success-message.php');
+    require_once(COMPONENTS . '/messages.php');
 
     if( !$logged ){
         redirect(PAGE_LOGIN);
@@ -210,10 +209,10 @@
                     ?>
                     <?php
                         if( isset($success) ){
-                            show_success_message("Player participation successfully updated");
+                            create_message("Player participation successfully updated", MSG_SUCCESS);
                         }
                         if( isset($error) ){
-                            show_message_on_error($error);
+                            create_message($error, MSG_ERROR);
                         }
                     ?>
                 </div>

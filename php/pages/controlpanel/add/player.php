@@ -2,7 +2,7 @@
     require_once('config.php');
     require_once(LIB . '/utils.php');
     require_once(COMPONENTS . '/logincheck.php');
-    require_once(COMPONENTS . '/error_message.php');
+    require_once(COMPONENTS . '/messages.php');
 
 
     if( !$logged ){
@@ -84,14 +84,12 @@
                             </div>
                         </div>
                         <?php 
-                            if ( isset($success) ): ?>
-                                <div class="notification is-success">
-                                    New player successfully added
-                                </div>
-                        <?php endif; ?>
-                        <?php
+                            if ( isset($success) ){
+                                create_message("New player successfully added", MSG_SUCCESS);
+                            }
+                            
                             if( isset($error) ){
-                                show_message_on_error($error);
+                                create_message($error, MSG_ERROR);
                             }
                         ?>
                     </form>

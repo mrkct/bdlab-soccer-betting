@@ -5,7 +5,7 @@
     require_once(LIB . '/models/team.php');
     require_once(COMPONENTS . '/paginated-select.php');
     require_once(COMPONENTS . '/logincheck.php');
-    require_once(COMPONENTS . '/error_message.php');
+    require_once(COMPONENTS . '/messages.php');
 
 
     define('STATE_SELECT_TEAM', 'select_team');
@@ -120,20 +120,15 @@
                                     </div>
                                 </div>
                                 <?php 
-                                    if ( isset($success) ): ?>
-                                        <div class="notification is-success">
-                                            <?php
-                                                if( $_POST["action"] == ACTION_DELETE ){
-                                                    echo "Team successfully deleted";
-                                                } else if( $_POST["action"] == ACTION_EDIT ){
-                                                    echo "Team data updated successfully";
-                                                }
-                                            ?>
-                                        </div>
-                                <?php endif; ?>
-                                <?php
+                                    if ( isset($success) ){
+                                        if( $_POST["action"] == ACTION_DELETE ){
+                                            create_message("Team successfully deleted", MSG_SUCCESS);
+                                        } else if( $_POST["action"] == ACTION_EDIT ){
+                                            create_message("Team data updated successfully", MSG_SUCCESS);
+                                        }
+                                    }
                                     if( isset($error) ){
-                                        show_message_on_error($error);
+                                        create_message($error, MSG_ERROR);
                                     }
                                 ?>
                             </form>
