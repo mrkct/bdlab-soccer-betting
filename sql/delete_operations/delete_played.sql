@@ -37,7 +37,7 @@ BEGIN
 
     SELECT * INTO match FROM match WHERE id = match_id;
 
-    IF current_collaborator.role = 'operator' AND match.created_by != collaborator_id THEN
+    IF current_collaborator.role = 'operator' AND match.created_by <> collaborator_id THEN
         result.success := FALSE;
         result.error_code := -1;
         result.message := 'Only the person who added the match can delete the players who played in it';
