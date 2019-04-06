@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION delete_match(
 DECLARE
     current_collaborator soccer.collaborator%ROWTYPE;
     result MatchQR;
+    old_row Match%ROWTYPE;
 BEGIN
     IF collaborator_id IS NULL THEN
         result.success := FALSE;
@@ -33,6 +34,15 @@ BEGIN
         result.message := 'User is not allowed to delete matches';
         RETURN result;
     END IF;
+
+    SELECT * INTO old_row FROM match WHERE match.id = match_id;
+
+    IF current_collaborator.role = 'operator' AND current_collaborator.id <> old_row.created_by THEN
+        result.success := FALSE;
+        result.error_code := -1;
+        result.message := 'Only the user who added this match can delete it';
+        RETURN result;
+    END IF; 
 
     DELETE
         FROM match
