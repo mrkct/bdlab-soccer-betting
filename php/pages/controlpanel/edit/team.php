@@ -43,8 +43,13 @@
         } else if ( $_POST["action"] == ACTION_EDIT ){
             if( isset($_POST["longname"]) && isset($_POST["shortname"]) ){
                 try{
-                    // TODO: Edit the team data
-                    // Team::edit($db, ...)
+                    $team = Team::edit(
+                        $db,
+                        $_POST["old_id"],
+                        $_POST["id"],
+                        $_POST["shortname"],
+                        $_POST["longname"]
+                    );
                     $success = true;
                 }catch(PermissionDeniedException $e){
                     $error = "You are not allowed to edit teams data";
@@ -95,6 +100,8 @@
                             <h2 class="title is-2 title-centered">Edit Team</h2>
                             <form method="POST" class="controlpanel-form">
                                 <input type="hidden" name="action" value="<?php echo ACTION_EDIT; ?>" />
+                                <input type="hidden" name="old_id" value="<?php echo $team["id"]; ?>" />
+
                                 <div class="field">
                                     <label class="label">Team's ID</label>
                                     <div class="control">

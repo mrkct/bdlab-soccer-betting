@@ -30,6 +30,11 @@ class Team{
                 'Team_delete',
                 'SELECT * FROM delete_team($1, $2);'
             );
+            pg_prepare(
+                $db,
+                'Team_edit',
+                'SELECT * FROM edit_team($1, $2, $3, $4, $5);'
+            );
             $prepared = true;
         }
     }
@@ -76,6 +81,14 @@ class Team{
      */
     public static function delete($db, $id){
         $row = execute_query($db, 'Team_delete', array(LoggedUser::getId(), $id));
+        return Team::rowToArray($row);
+    }
+
+    /**
+     * TODO: Documentation here
+     */
+    public static function edit($db, $old_id, $new_id, $new_shortname, $new_longname){
+        $row = execute_query($db, 'Team_edit', array(LoggedUser::getId(), $old_id, $new_id, $new_shortname, $new_longname));
         return Team::rowToArray($row);
     }
 
