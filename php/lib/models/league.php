@@ -43,6 +43,11 @@ class League{
                 'League_delete',
                 'SELECT * FROM delete_league($1, $2);'
             );
+            pg_prepare(
+                $db,
+                'League_edit',
+                'SELECT * FROM edit_league($1, $2, $3, $4, $5);'
+            );
             $prepared = true;
         }
     }
@@ -115,6 +120,21 @@ class League{
      */
     public static function delete($db, $id){
         $row = execute_query($db, 'League_delete', array($id));
+        return League::rowToArray($row);
+    }
+
+    /**
+     * Edits a league row based on the passed id.
+     * Returns the newly edited row on success. Throws an
+     * exception on failure
+     * @param db: A valid database connection
+     * @param id: The id of the row to edit
+     * @param new_id: New id value of the row
+     * @param new_name: New name value of the row
+     * @param new_country: New country value of the row
+     */
+    public static function edit($db, $id, $new_id, $new_name, $new_country){
+        $row = execute_query($db, 'League_edit',  array(LoggedUser::getId(), $id, $new_id, $new_name, $new_country));
         return League::rowToArray($row);
     }
 
