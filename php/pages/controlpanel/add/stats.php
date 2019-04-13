@@ -10,10 +10,6 @@
         redirect(PAGE_LOGIN);
         exit();
     }
-    
-    function read_param($param){
-        return isset($param) && !empty($param)? $param : NULL;
-    }
 
     require_once(LIB . '/database.php');
     $db = db_connect();
