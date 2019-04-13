@@ -18,48 +18,7 @@ class Stats{
             pg_prepare(
                 $db,
                 'Stats_find',
-                'SELECT 
-                    player,
-                    attribute_date,
-                    overall_rating,
-                    potential,
-                    preferred_foot,
-                    attacking_work_rate,
-                    defensive_work_rate,
-                    crossing,
-                    finishing,
-                    heading_accuracy,
-                    short_passing volleys,
-                    dribbling,
-                    curve,
-                    free_kick_accuracy,
-                    long_passing,
-                    ball_control,
-                    acceleration,
-                    sprint_speed,
-                    agility,
-                    reactions,
-                    balance,
-                    shot_power,
-                    jumping,
-                    stamina,
-                    strength,
-                    long_shots,
-                    aggression,
-                    interceptions,
-                    positioning, 
-                    vision,
-                    penalties,
-                    marking,
-                    standing_tackle,
-                    sliding_tackle,
-                    gk_diving,
-                    gk_handling,
-                    gk_kicking,
-                    gk_positioning,
-                    gk_reflexes 
-                FROM stats 
-                WHERE player = $1 AND attribute_date = $2;'
+                'SELECT * FROM stats WHERE player = $1 AND attribute_date = $2;'
             );
             pg_prepare(
                 $db, 
@@ -75,6 +34,16 @@ class Stats{
                 $db,
                 'Stats_delete',
                 'SELECT * FROM delete_stats($1, $2, $3);'
+            );
+            pg_prepare(
+                $db,
+                'Stats_edit',
+                'SELECT * FROM edit_stats(
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+                    $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23,
+                    $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34,
+                    $35, $36, $37, $38, $39, $40, $41, $42
+                );'
             );
             $prepared = true;
         }
@@ -139,11 +108,50 @@ class Stats{
         return Stats::rowToArray($row);
     }
 
+    /**
+     * TODO: Write documentation here
+     */
     public static function delete($db, $player, $attribute_date){
         $row = execute_query($db, 'Stats_delete', array(LoggedUser::getId(), $player, $attribute_date));
         return $row;
     }
 
+    /**
+     * TODO: Write documentation here
+     */
+    public static function edit(
+        $db, $player, $old_attribute_date, 
+        $new_attribute_date, $new_overall_rating, $new_potential, 
+        $new_preferred_foot, $new_attacking_work_rate,
+        $new_defensive_work_rate, $new_crossing, $new_finishing,
+        $new_heading_accuracy, $new_short_passing, $new_volleys,
+        $new_dribbling, $new_curve, $new_free_kick_accuracy, $new_long_passing,
+        $new_ball_control, $new_acceleration, $new_sprint_speed,
+        $new_agility, $new_reactions, $new_balance, $new_shot_power,
+        $new_jumping, $new_stamina, $new_strength, $new_long_shots,
+        $new_aggression, $new_interceptions, $new_positioning,
+        $new_vision, $new_penalties, $marking, $new_standing_tackle,
+        $new_sliding_tackle, $new_gk_diving, $new_gk_handling,
+        $new_gk_kicking, $new_gk_positioning, $new_gk_reflexes
+    )
+    {
+        $row = execute_query($db, 'Stats_edit', array(
+            LoggedUser::getId(), $player, $old_attribute_date,
+            $new_attribute_date, $new_overall_rating, $new_potential, 
+            $new_preferred_foot, $new_attacking_work_rate,
+            $new_defensive_work_rate, $new_crossing, $new_finishing,
+            $new_heading_accuracy, $new_short_passing, $new_volleys,
+            $new_dribbling, $new_curve, $new_free_kick_accuracy, $new_long_passing,
+            $new_ball_control, $new_acceleration, $new_sprint_speed,
+            $new_agility, $new_reactions, $new_balance, $new_shot_power,
+            $new_jumping, $new_stamina, $new_strength, $new_long_shots,
+            $new_aggression, $new_interceptions, $new_positioning,
+            $new_vision, $new_penalties, $marking, $new_standing_tackle,
+            $new_sliding_tackle, $new_gk_diving, $new_gk_handling,
+            $new_gk_kicking, $new_gk_positioning, $new_gk_reflexes
+        ));
+        return Stats::rowToArray($row);
+    }
     /**
      * Takes an associative array for a database row
      * and returns another associative array with all
