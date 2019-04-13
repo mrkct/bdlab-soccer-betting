@@ -26,7 +26,24 @@
      */
     function format_date($date){
         return date_format(
-            date_create("2013-03-15"), 
+            date_create($date), 
             "d/m/Y"
         );
+    }
+
+    /**
+     * Tests 'isset' on all elements in the $keys array
+     * on $where. Returns true if all 'isset's were true,
+     * false otherwise
+     * @param keys: An array of map keys to test on $where
+     * @param where: A map to test keys on
+     * @return boolean
+     */
+    function are_set($keys, $where){
+        foreach($keys as $key){
+            if( !isset($where[$key]) ){
+                return false;
+            }
+        }
+        return true;
     }
