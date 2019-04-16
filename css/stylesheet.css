@@ -75,7 +75,7 @@
     margin-top: 24px;
 }
 
-.delete-button{
+.delete-button, .restart-button{
     width: 100%;
     margin-top: 8px;
 }

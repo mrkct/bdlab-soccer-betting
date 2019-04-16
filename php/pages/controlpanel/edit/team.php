@@ -34,6 +34,7 @@
             try{
                 Team::delete($db, $_POST["id"]);
                 $success = true;
+                $deleted = true;
             }catch(PermissionDeniedException $e){
                 $error = "You are not allowed to delete teams data";
             }catch(DBException $e){
@@ -122,8 +123,20 @@
                                 </div>
                                 <div class="field">
                                     <div class="control">
-                                        <input class="input button is-link" type="submit" value="Insert data" />
-                                        <button type="button" class="button is-danger modal-toggle">Delete Match</button>
+                                        <?php
+                                            if( !isset($success) || !isset($deleted) ): ?>
+                                                <input class="input button is-link" type="submit" value="Insert data" />
+                                                <button type="button" class="button is-danger modal-toggle delete-button">
+                                                    Delete Match
+                                                </button>
+                                        <?php
+                                            endif; ?>
+                                        <?php
+                                            if( isset($success) && $success == true ): ?>
+                                                <a class="button is-primary restart-button" href="?">
+                                                    Edit another team
+                                                </a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <?php 
@@ -167,20 +180,6 @@
             </div>
             <button class="modal-close is-large modal-toggle" aria-label="close"></button>
         </div>
-        <script type="text/javascript">
-            var toggleElements = document.getElementsByClassName("modal-toggle");
-            for(var i = 0; i < toggleElements.length; i++){
-                toggleElements[i].addEventListener("click", toggle_modal)
-            }
-            
-            function toggle_modal(){
-                let modalClasses = document.getElementById("modal-delete-warning").classList;
-                if( !modalClasses.contains("is-active") ){
-                    modalClasses.add("is-active");
-                } else {
-                    modalClasses.remove("is-active");
-                }
-            }
-        </script>
+        <script type="text/javascript" src="<?php echo JS; ?>/modal-toggle.js"></script>
     </body>
 </html>
