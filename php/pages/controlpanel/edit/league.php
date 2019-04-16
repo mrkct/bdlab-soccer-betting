@@ -34,6 +34,7 @@
             try{
                 League::delete($db, $_POST["id"]);
                 $success = true;
+                $deleted = true;
             }catch(PermissionDeniedException $e){
                 $error = "You are not allowed to delete leagues data";
             }catch(DBException $e){
@@ -122,8 +123,19 @@
                                 </div>
                                 <div class="field">
                                     <div class="control">
-                                        <input class="input button is-link" type="submit" value="Insert data" />
-                                        <button type="button" class="button is-danger modal-toggle">Delete League</button>
+                                        <?php
+                                            if( !isset($success) || !isset($deleted) ): ?>
+                                                <input class="input button is-link" type="submit" value="Insert data" />
+                                                <button type="button" class="button is-danger modal-toggle delete-button">Delete League</button>
+                                        <?php
+                                            endif; ?>
+                                        <?php
+                                            if( isset($success) ): ?>
+                                                <a class="button is-primary restart-button" href="?">
+                                                    Edit another league
+                                                </a>
+                                        <?php
+                                            endif; ?>
                                     </div>
                                 </div>
                                 <?php 
