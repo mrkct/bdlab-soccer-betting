@@ -713,8 +713,10 @@
                                                     <input class="input button is-link" type="submit" value="Update Data" />
                                                     <button type="button" class="button is-danger modal-toggle delete-button">Delete Player</button>
                                             <?php
-                                                else: ?>
-                                                    <a class="button is-link" href="?player=<?php echo $player["id"]; ?>">
+                                                endif; ?>
+                                            <?php
+                                                if( isset($success) ): ?>
+                                                    <a class="button is-primary restart-button" href="?player=<?php echo $player["id"]; ?>">
                                                         Edit another stats relevation
                                                     </a>
                                             <?php
