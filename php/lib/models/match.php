@@ -54,6 +54,11 @@ class Match{
             );
             pg_prepare(
                 $db,
+                'Match_edit',
+                'SELECT * FROM edit_match($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);'
+            );
+            pg_prepare(
+                $db,
                 'Match_insertPlayed',
                 'SELECT * FROM insert_played($1, $2, $3, $4);'
             );
@@ -61,6 +66,11 @@ class Match{
                 $db,
                 'Match_playedExists',
                 'SELECT player, match, team FROM played WHERE player = $1 AND match = $2 AND team = $3;'
+            );
+            pg_prepare(
+                $db,
+                'Match_deletePlayed',
+                'SELECT * FROM delete_played($1, $2, $3);'
             );
             $prepared = true;
         }
@@ -117,6 +127,52 @@ class Match{
     public static function delete($db, $id){
         $row = execute_query($db, 'Match_delete', array(LoggedUser::getId(), $id));
         return Match::matchRowToArray($row);
+    }
+
+    /**
+     * Edits a match row based on the passed id.
+     * Returns the newly edited row on success. Throws an
+     * exception on failure
+     * @param db: A valid database connection
+     * @param id: Id of the match the new data refers to
+     * @param new_league: New league the match belongs to
+     * @param new_season: Updated season value
+     * @param new_stage: Updated stage value
+     * @param new_played_on: Updated date on when the match was played
+     * @param new_hometeam: Updated hometeam ID
+     * @param new_awayteam: Updated awayteam ID
+     * @param new_hometeam_goals: Updated goals for hometeam
+     * @param new_awayteam_goals: Updated goals for awayteam
+     */
+    public static function edit(
+            $db, 
+            $id,
+            $new_league, 
+            $new_season, 
+            $new_stage, 
+            $new_played_on, 
+            $new_hometeam, 
+            $new_awayteam, 
+            $new_hometeam_goals, 
+            $new_awayteam_goals
+        ){
+        
+        $row = execute_query(
+            $db, 
+            'Match_edit', 
+            array(
+                LoggedUser::getId(), 
+                $id,
+                $new_league, 
+                $new_season, 
+                $new_stage, 
+                $new_played_on, 
+                $new_hometeam_goals, 
+                $new_awayteam_goals,
+                $new_hometeam, 
+                $new_awayteam
+            )
+        );
     }
 
     /**
