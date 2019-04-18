@@ -70,8 +70,8 @@
             <div class="columns">
                 <?php require_once(COMPONENTS . '/controlpanel-menu.php'); ?>
                 <div class="container column is-three-quarters">
-                    <h2 class="title is-2">Import data from CSV</h2>
-                    <form class="form controlpanel-form" method="POST" enctype="multipart/form-data">
+                    <form class="form controlpanel-form form-container" method="POST" enctype="multipart/form-data">
+                        <h2 class="title is-2 title-centered">Import data from CSV</h2>
                         <input type="file" name="file" class="file" />
                         <label class="radio">
                             <input type="radio" name="type" value="<?php echo TYPE_MATCH; ?>" />
