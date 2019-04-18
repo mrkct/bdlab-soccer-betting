@@ -40,7 +40,14 @@
                         '/delete_operations/delete_player.sql',
                         '/delete_operations/delete_quote.sql',
                         '/delete_operations/delete_stats.sql',
-                        '/delete_operations/delete_team.sql'
+                        '/delete_operations/delete_team.sql',
+                        '/edit_operations/edit_betprovider.sql',
+                        '/edit_operations/edit_league.sql',
+                        '/edit_operations/edit_match.sql',
+                        '/edit_operations/edit_player.sql',
+                        '/edit_operations/edit_quote.sql',
+                        '/edit_operations/edit_stats.sql',
+                        '/edit_operations/edit_team.sql'
                     );
 
                     foreach($sqlfiles as $filepath){
