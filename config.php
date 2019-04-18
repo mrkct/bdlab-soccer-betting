@@ -1,10 +1,15 @@
 <?php
-    define('DB_HOST', 'localhost');
-    define('DB_NAME', 'soccer');
-    define('DB_SCHEMA', 'soccer');
-    define('DB_USER', 'postgres');
-    define('DB_PASSWORD', 'segreto');
-    define('DB_PORT', 5432);
+
+    function try_getenv($name, $default){
+        return getenv($name) == NULL ? $default: getenv($name);
+    }
+
+    define('DB_HOST', try_getenv('DB_HOST', 'localhost'));
+    define('DB_NAME', try_getenv('DB_NAME', 'soccer'));
+    define('DB_SCHEMA', try_getenv('DB_SCHEMA', 'soccer'));
+    define('DB_USER', try_getenv('DB_USER', 'postgres'));
+    define('DB_PASSWORD', try_getenv('DB_PASSWORD', 'segreto'));
+    define('DB_PORT', try_getenv('DB_PORT', 5432) );
 
     define('ROOT', __DIR__ );
 
