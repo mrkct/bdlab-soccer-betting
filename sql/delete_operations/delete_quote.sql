@@ -35,7 +35,7 @@ BEGIN
         RETURN result;
     END IF;
 
-    IF c_user.role = 'partner' AND c_user.affiliation <> bet_provider THEN
+    IF c_user.role = 'partner' AND c_user.affiliation <> bet_provider_id THEN
         result.success := FALSE;
         result.error_code := -1;
         result.message := 'User is not allowed to delete quotes for this betting provider';
@@ -50,8 +50,8 @@ BEGIN
         RETURN result;
     END IF;
 
-    INSERT INTO quote(match, bet_provider, home_quote, draw_quote, away_quote, created_by)
-                VALUES(match, bet_provider, home_quote, draw_quote, away_quote, collaborator_id)
+    DELETE FROM quote 
+    WHERE match = match_id AND bet_provider = bet_provider_id
     RETURNING
         quote.match, 
         quote.bet_provider, 
