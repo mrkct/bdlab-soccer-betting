@@ -165,7 +165,7 @@
                                     <div class="control">
                                         <?php
                                             if( $quote["created_by"] == LoggedUser::getId() && !isset($success) || !isset($deleted) ): ?>
-                                                <input class="input button is-link" type="submit" value="Updated Data" />
+                                                <input class="input button is-link" type="submit" value="Update Data" />
                                                 <button type="button" class="button is-danger modal-toggle delete-button">
                                                     Delete Quote
                                                 </button>
