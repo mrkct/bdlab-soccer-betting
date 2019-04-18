@@ -6,8 +6,6 @@
     define('DB_PASSWORD', 'segreto');
     define('DB_PORT', 5432);
 
-    // Non è una buona idea questo probabilmente
-    // set_include_path(__DIR__);
     define('ROOT', __DIR__ );
 
     define('PREFIX', '/bdlab/php');
