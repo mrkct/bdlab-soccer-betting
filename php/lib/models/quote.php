@@ -31,15 +31,17 @@ class Quote{
             pg_prepare(
                 $db,
                 'Quote_insert',
-                'SELECT 
-                    match, bet_provider, home_quote, draw_quote, away_quote, created_by, 
-                    success, error_code, message 
-                 FROM insert_quote($1, $2, $3, $4, $5, $6);'
+                'SELECT * FROM insert_quote($1, $2, $3, $4, $5, $6);'
             );
             pg_prepare(
                 $db,
                 'Quote_delete',
                 'SELECT * FROM delete_quote($1, $2, $3);'
+            );
+            pg_prepare(
+                $db,
+                'Quote_edit',
+                'SELECT * FROM edit_quote($1, $2, $3, $4, $5, $6);'
             );
             $prepared = true;
         }
@@ -69,7 +71,7 @@ class Quote{
      * not support the RETURNING construct and can't return after an INSERT.
      * Raises an exception if an error occurs.
      */
-    public static function insert($db, $match, $bet_provider, $home_quote, $draw_quote, $away_quote, $created_by){
+    public static function insert($db, $match, $bet_provider, $home_quote, $draw_quote, $away_quote){
         $row = execute_query(
             $db, 
             'Quote_insert', 
@@ -85,10 +87,52 @@ class Quote{
      * on failure.
      */
     public static function delete($db, $match, $bet_provider){
-        $row = execute_query($db, 'Quote_delete', array(LoggedUser::getId(), $match, $bet_provider));
+        $row = execute_query(
+            $db, 
+            'Quote_delete', 
+            array(
+                LoggedUser::getId(), 
+                $match, 
+                $bet_provider
+            )
+        );
         return Quote::rowToArray($row);
     }
 
+    /**
+     * Edits a quote row based on the passed match & bet provider.
+     * Returns the newly edited row on success. Throws an
+     * exception on failure
+     * @param db: A valid database connection
+     * @param match: The match the quote refers to
+     * @param bet_provider: ID of the bet provider the quote is for
+     * @param new_home_quote: New quote for the home team value of the row
+     * @param new_draw_quote: New quote for a draw in the match value of the row
+     * @param new_away_quote: New quote for the away team value of the row
+     */
+    public static function edit(
+        $db, 
+        $match, 
+        $bet_provider, 
+        $new_home_quote, 
+        $new_draw_quote, 
+        $new_away_quote
+    )
+    {
+        $row = execute_query(
+            $db, 
+            'Quote_edit', 
+            array(
+                LoggedUser::getId(), 
+                $match, 
+                $bet_provider, 
+                $new_home_quote, 
+                $new_draw_quote, 
+                $new_away_quote
+            )
+        );
+        return Quote::rowToArray($row);
+    }
     /**
      * Takes an associative array for a database row
      * and returns another associative array with all

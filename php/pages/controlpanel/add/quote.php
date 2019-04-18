@@ -85,8 +85,7 @@
                 LoggedUser::getAffiliation(),
                 $_POST["home_quote"],
                 $_POST["draw_quote"],
-                $_POST["away_quote"],
-                LoggedUser::getId()
+                $_POST["away_quote"]
             );
             $success = true;
         }catch(PermissionDeniedException $e){
