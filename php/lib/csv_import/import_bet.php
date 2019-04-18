@@ -63,8 +63,7 @@ function bet_insert($db, $matchquotes){
                 $provider, 
                 $matchquotes["quotes"][$provider]["home"],
                 $matchquotes["quotes"][$provider]["draw"],
-                $matchquotes["quotes"][$provider]["away"],
-                LoggedUser::getId()
+                $matchquotes["quotes"][$provider]["away"]
             );
         }catch(DuplicateDataException $e){}
     }
