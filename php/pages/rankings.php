@@ -4,8 +4,21 @@
     require_once(LIB . '/models/league.php');
     $db = db_connect();
     
-    $league_id = isset($_GET["league"])? $_GET["league"] : 1187;
-    $season = isset($_GET["season"])? $_GET["season"] : "2008/2009";
+    $league_id = isset($_GET["league"])? $_GET["league"] : NULL;
+    $season = isset($_GET["season"])? $_GET["season"] : NULL;
+
+    if( $league_id == NULL || $season == NULL ){
+        $result = pg_fetch_assoc(pg_query(
+            "SELECT 
+                league.*, match.season 
+             FROM league
+             JOIN match ON match.league = league.id
+             ORDER BY league.name, match.season DESC
+             LIMIT 1"
+        ));
+        $league_id = $result["id"];
+        $season = $result["season"];
+    }
     
     League::prepare($db);
     $league = League::findById($db, $league_id);
@@ -50,10 +63,12 @@
                                 <?php
                                     pg_prepare($db, "get_leagues", "SELECT * FROM league ORDER BY name;");
                                     $league_result = pg_execute($db, "get_leagues", array());
-                                    while($league = pg_fetch_assoc($league_result) ):
+                                    while($row = pg_fetch_assoc($league_result) ):
                                         ?>
-                                        <option value="<?php echo $league["id"]; ?>">
-                                            <?php echo $league["name"]; ?>
+                                        <option 
+                                            value="<?php echo $row["id"]; ?>" 
+                                            <?php echo ($league["id"] == $row["id"]? "selected": ""); ?> >
+                                            <?php echo $row["name"]; ?>
                                         </option>
                                 <?php 
                                     endwhile; 
@@ -71,10 +86,12 @@
                                 <?php
                                     pg_prepare($db, "get_seasons", "SELECT DISTINCT season FROM match ORDER BY season;");
                                     $seasons_result = pg_execute($db, "get_seasons", array());
-                                    while($season = pg_fetch_assoc($seasons_result)):
+                                    while($row = pg_fetch_assoc($seasons_result)):
                                         ?>
-                                        <option value="<?php echo $season["season"]; ?>">
-                                            <?php echo $season["season"]; ?>
+                                        <option 
+                                            value="<?php echo $row["season"]; ?>" 
+                                            <?php echo ($season == $row["season"]? "selected": ""); ?> >
+                                            <?php echo $row["season"]; ?>
                                         </option>
                                 <?php
                                     endwhile;
