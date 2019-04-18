@@ -68,7 +68,11 @@
                             endwhile; 
                         }
                         if( $total_teams > RESULT_ITEMS ){
-                            echo "<div class='list-item'>and ", ($total_teams - RESULT_ITEMS), " more...</div>";
+                            ?>
+                                <a class='list-item' href="<?php echo PAGES, "/teams.php?q=", $_GET["q"]; ?>">
+                                    and <?php echo ($total_teams - RESULT_ITEMS); ?> more...
+                                </a>;
+                            <?php
                         }
                     ?>
                 </div>
@@ -92,8 +96,11 @@
                                 $i++;
                             endwhile; 
                         }
-                        if( $total_players > RESULT_ITEMS ){
-                            echo "<div class='list-item'>and ", ($total_players - RESULT_ITEMS), " more...</div>";
+                        if( $total_players > RESULT_ITEMS ){ ?>
+                                <a class='list-item' href="<?php echo PAGES, "/players.php?q=", $_GET["q"]; ?>">
+                                    and <?php echo ($total_players - RESULT_ITEMS); ?> more...
+                                </a>
+                            <?php
                         }
                     ?>
                 </div>
