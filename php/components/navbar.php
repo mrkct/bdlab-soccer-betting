@@ -3,14 +3,14 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
-            <a class="navbar-item" id="navbar-title-container" href="/bdlab/">
+            <a class="navbar-item" id="navbar-title-container" href="<?php echo PAGE_HOME; ?>">
                 <i class="far fa-futbol"></i>
                 <span>Soccer Bets</span>
             </a>
         </div>
         <div class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item" href="/bdlab/">
+                <a class="navbar-item" href="<?php echo PAGE_HOME; ?>">
                     Home
                 </a>
                 <a class="navbar-item" href="<?php echo PAGES; ?>/rankings.php">
