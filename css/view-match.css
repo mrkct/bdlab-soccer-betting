@@ -2,6 +2,11 @@
     display: block;
     overflow: auto;
 }
+
+.match-result-players > table > tbody > tr > td{
+    width: 50%;
+}
+
 .match-info{
     text-align: center;
 }
