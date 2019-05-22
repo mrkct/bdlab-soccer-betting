@@ -74,7 +74,7 @@
                         <?php
                             while($match = pg_fetch_assoc($result)):
                         ?>
-                            <a href="/bdlab/php/pages/view/match.php?id=<?php echo $match["id"]; ?>">
+                            <a href="<?php echo PAGES; ?>/view/match.php?id=<?php echo $match["id"]; ?>">
                             <tr>
                                 <td><?php echo date("d/m/Y", strtotime($match["played_on"])); ?></td>
                                 <td><?php echo $match["hometeam_longname"]; ?></td>
