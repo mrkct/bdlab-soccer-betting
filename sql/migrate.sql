@@ -49,9 +49,9 @@ CREATE TABLE IF NOT EXISTS stats(
     gk_kicking INTEGER,
     gk_positioning INTEGER,
     gk_reflexes INTEGER,
-    CHECK (preferred_foot IN ('right', 'left')),
-    CHECK (attacking_work_rate IN ('low', 'medium', 'high')),
-    CHECK (defensive_work_rate IN ('low', 'medium', 'high')),
+    CHECK(preferred_foot IN ('right', 'left')),
+    CHECK(attacking_work_rate IN ('low', 'medium', 'high')),
+    CHECK(defensive_work_rate IN ('low', 'medium', 'high')),
     CHECK(crossing >= 0 AND crossing <= 100),
     CHECK(finishing >= 0 AND finishing <= 100),
     CHECK(heading_accuracy >= 0 AND heading_accuracy <= 100),
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS match(
     created_by INTEGER NOT NULL REFERENCES collaborator(id) ON UPDATE CASCADE ON DELETE SET NULL,
     CHECK (hometeam <> awayteam),
     CHECK (stage > 0),
-    UNIQUE(league, stage, played_on, hometeam, awayteam)
+    UNIQUE(league, season, stage, played_on, hometeam, awayteam)
 );
 
 CREATE TABLE IF NOT EXISTS played(
