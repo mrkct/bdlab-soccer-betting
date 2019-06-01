@@ -54,3 +54,11 @@
     line-height: 54px;
     text-align: center;
 }
+.panel-block.player-entry{
+    position: relative;
+}
+
+.panel-block.player-entry > button.delete{
+    position: absolute;
+    right: 16px;
+}

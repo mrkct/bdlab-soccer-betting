@@ -93,7 +93,7 @@ function delete_item(element){
 
 function create_team_item(id, name, inputname){
     var template = '\
-    <div class="panel-block" data-id={id} data-name={name}>\
+    <div class="panel-block player-entry" data-id={id} data-name={name}>\
         <span class="panel-icon">\
             <i class="fas fa-user" aria-hidden="true"></i>\
         </span>\

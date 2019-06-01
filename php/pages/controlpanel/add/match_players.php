@@ -142,6 +142,7 @@
     <head>
         <title>Soccer Bets - Control Panel</title>
         <?php require_once(COMPONENTS . '/head-imports.php'); ?>
+        <link href="<?php echo CSS; ?>/view-match.css" rel="stylesheet">
     </head>
     <body class="has-background-light">
         <?php include_once(COMPONENTS . '/navbar.php'); ?>
