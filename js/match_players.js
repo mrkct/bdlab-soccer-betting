@@ -68,6 +68,21 @@ function search_players(){
 }
 
 function delete_item(element){
+    let idToDelete = element.parentNode.dataset.id;
+    let hplayers = hometeam.players;
+    for(let i = 0; i < hplayers.length; i++){
+        if (hplayers[i].id === idToDelete){
+            hometeam.players.splice(i, 1);
+            break;
+        }
+    }
+    let aplayers = awayteam.players;
+    for(let i = 0; i < aplayers.length; i++){
+        if (aplayers[i].id === idToDelete){
+            awayteam.players.splice(i, 1);
+            break;
+        }
+    }
     element
     .parentNode
     .parentNode
@@ -136,10 +151,8 @@ document.getElementById("button-addawayteam").addEventListener("click", function
 
 window.onload = function(event){
     var match_id = document.getElementById("match_id").value;
-    console.log("ciao");
     ajax("?api=1&action=status&match=" + match_id, "GET", function(result){
         var result = JSON.parse(result);
-        console.log(result);
         if( result.success ){
             var hometeam_players = result.result.hometeam;
             var awayteam_players = result.result.awayteam;
@@ -161,7 +174,6 @@ window.onload = function(event){
             }
         } else {
             alert("Error: could not load the current players list. You should reload or you might lose data");
-            console.error(result);
         }
     }, function(readyState, status){});
 };
