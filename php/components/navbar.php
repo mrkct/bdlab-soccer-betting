@@ -1,6 +1,6 @@
 <?php require_once('logincheck.php'); ?>
 <?php require_once('config.php'); ?>
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
             <a class="navbar-item" id="navbar-title-container" href="<?php echo PAGE_HOME; ?>">
