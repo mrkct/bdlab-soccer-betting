@@ -1,5 +1,5 @@
 <?php require_once('config.php'); ?>
-<!DOCTYPE html5>
+<!DOCTYPE html>
 <html>
     <head>
         <title>Soccer Bets - First Setup</title>

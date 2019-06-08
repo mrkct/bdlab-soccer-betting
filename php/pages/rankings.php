@@ -42,7 +42,7 @@
         )
     );
 ?>
-<!DOCTYPE html5>
+<!DOCTYPE html>
 <html>
     <head>
         <title>Soccer Bets - Rankings</title>

@@ -19,7 +19,7 @@
         $error = "The URL is missing the player id. You might have followed a bad link or copied the link wrong";;
     }
 ?>
-<!DOCTYPE html5>
+<!DOCTYPE html>
 <html>
     <head>
         <title>Soccer Bets</title>

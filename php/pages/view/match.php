@@ -26,7 +26,7 @@
         $error = "The URL is missing the match id. You might have followed a bad link or copied the link wrong.";
     }
 ?>
-<!DOCTYPE html5>
+<!DOCTYPE html>
 <html>
     <head>
         <title>Soccer Bets</title>

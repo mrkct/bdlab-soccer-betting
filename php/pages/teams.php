@@ -4,7 +4,7 @@
     require_once(COMPONENTS . '/paginated-select.php');
     $db = db_connect();
 ?>
-<!DOCTYPE html5>
+<!DOCTYPE html>
 <html>
     <head>
         <title>Soccer Bets</title>
