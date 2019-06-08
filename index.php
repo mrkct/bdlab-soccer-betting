@@ -32,7 +32,7 @@
                             </span>
                             <span>Search</span>
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </section>
