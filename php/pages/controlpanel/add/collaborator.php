@@ -120,9 +120,12 @@
                                 <div class="notification is-success">
                                     New collaborator successfully added
                                 </div>
-                            <?php else: ?>
-                                <div class="notification is-danger">
-                                    <?php echo $message; ?>
+                            <?php else: 
+                                    if ( isset($message) ): ?>
+                                        <div class="notification is-danger">
+                                            <?php echo $message; ?>
+                                        </div>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </form>
                 </div>
