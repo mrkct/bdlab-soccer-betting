@@ -14,7 +14,6 @@
     <p class="menu-label">General</p>
     <ul class="menu-list">
         <li><a href="<?php echo PAGES; ?>/controlpanel/index.php" <?php echo ($name == 'index.php' || $name == 'view_account.php')? $active: "" ?>>My account</a></li>
-        <li><a href="<?php echo PAGES; ?>/controlpanel/view_data.php" <?php echo ($name == 'view_data.php')? $active: "" ?>>View my data</a></li>
     </ul>
     <?php
         if( LoggedUser::getRole() == ROLE_ADMIN ): ?>
@@ -29,6 +28,7 @@
                 <li><a href="<?php echo PAGES; ?>/controlpanel/add/stats.php" <?php echo ($name == 'stats.php' && $folder == '/add')? $active: "" ?>>Add players' stats</a></li>
                 <li><a href="<?php echo PAGES; ?>/controlpanel/edit/stats.php" <?php echo ($name == 'stats.php' && $folder == '/edit')? $active: "" ?>>Edit players' stats</a></li>
                 <li><a href="<?php echo PAGES; ?>/controlpanel/import_csv.php" <?php echo ($name == 'import_csv.php')? $active: "" ?>>Import from .csv</a></li>
+                <li><a href="<?php echo PAGES; ?>/controlpanel/add/collaborator.php" <?php echo ($name == 'collaborator.php')? $active: "" ?>>Create a new account</a></li>
             </ul>
     <?php
         endif;
