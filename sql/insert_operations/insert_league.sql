@@ -79,8 +79,3 @@ BEGIN
             RETURN result;
 END;
 $$ language 'plpgsql';
-
--- Test inserts
-/**
-    select * from insert_league(2, NULL, 'new insert!', 'Italy');
-*/

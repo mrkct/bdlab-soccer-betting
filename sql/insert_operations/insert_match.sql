@@ -106,6 +106,3 @@ BEGIN
             RETURN result;
 END;
 $$ language 'plpgsql';
-
-select * from insert_match(2, NULL, 1200, '1900/1901', 3, '1900-01-01', 9987, 9993, 1, 0);
-select * from insert_match(2, NULL, 1200, '1900/1901', 3, '1900-01-01', 9987, 9993, 1, 0)
