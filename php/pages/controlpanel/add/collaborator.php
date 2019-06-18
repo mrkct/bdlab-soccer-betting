@@ -76,8 +76,8 @@
                         </div>
                         <div class="field">
                             <label class="label">Role</label>
-                            <div class="select max-width">
-                                <select class="max-width" name="role" onChange="roleUpdate()">
+                            <div class="select is-fullwidth">
+                                <select class="is-fullwidth" name="role" onChange="roleUpdate()">
                                     <option value="administrator">Administrator</option>
                                     <option value="operator">Operator</option>
                                     <option value="partner">Partner</option>
@@ -86,8 +86,8 @@
                         </div>
                         <div class="field" id="affiliation-field" style="display: none">
                             <label class="label">Affiliation</label>
-                            <div class="select max-width">
-                                <select class="max-width" name="affiliation">
+                            <div class="select is-fullwidth">
+                                <select class="is-fullwidth" name="affiliation">
                                     <option value="">None</option>
                                     <?php
                                         $betproviders = pg_query("SELECT * FROM bet_provider ORDER BY name, id;");
