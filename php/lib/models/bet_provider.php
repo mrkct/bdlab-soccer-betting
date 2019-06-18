@@ -33,6 +33,11 @@ class BetProvider{
                 'BetProvider_delete',
                 'SELECT * FROM delete_bet_provider($1, $2);'
             );
+            pg_prepare(
+                $db,
+                'BetProvider_edit',
+                'SELECT * FROM edit_bet_provider($1, $2, $3, $4);'
+            );
             $prepared = true;
         }
     }
@@ -87,6 +92,25 @@ class BetProvider{
             $db,
             'BetProvider_delete',
             array(LoggedUser::getId(), $id)
+        );
+
+        return BetProvider::rowToArray($row);
+    }
+
+    /**
+     * Edits a bet provider row based on the passed id.
+     * Returns the newly edited row on success. Throws an
+     * exception on failure
+     * @param db: A valid database connection
+     * @param id: The id of the row to edit
+     * @param new_id: New id value of the row
+     * @param new_name: New name value of the row
+     */
+    public static function edit($db, $id, $new_id, $new_name){
+        $row = execute_query(
+            $db,
+            'BetProvider_edit',
+            array(LoggedUser::getId(), $id, $new_id, $new_name)
         );
 
         return BetProvider::rowToArray($row);
