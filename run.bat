@@ -3,7 +3,7 @@ REM Sets environment variables and runs apache
 REM Insert your data here
 
 SET DB_HOST=localhost
-SET DB_NAME=bdlab
+SET DB_NAME=soccer
 SET DB_SCHEMA=soccer
 SET DB_USER=postgres
 SET DB_PASSWORD=segreto
