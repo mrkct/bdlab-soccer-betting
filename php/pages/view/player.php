@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <h2 class="title is-2 title-centered">
-                        Matches where he played recently
+                        Recently played matches
                     </h2>
                     <?php
                         pg_prepare(
