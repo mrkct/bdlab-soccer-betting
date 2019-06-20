@@ -22,6 +22,9 @@
                 <a class="navbar-item" href="<?php echo PAGES; ?>/players.php">
                     Players
                 </a>
+                <a class="navbar-item" href="<?php echo PAGES; ?>/matches.php">
+                    Matches
+                </a>
             </div>
             <div class="navbar-end">
                 <?php
