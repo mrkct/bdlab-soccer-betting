@@ -8,3 +8,7 @@
     float: left;
     padding-top: 24px;
 }
+
+h2 {
+    clear: left;
+}
