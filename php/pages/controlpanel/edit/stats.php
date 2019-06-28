@@ -711,7 +711,7 @@
                                             <?php
                                                 if( !isset($success) || !isset($deleted) ): ?>
                                                     <input class="input button is-link" type="submit" value="Update Data" />
-                                                    <button type="button" class="button is-danger modal-toggle delete-button">Delete Player</button>
+                                                    <button type="button" class="button is-danger modal-toggle delete-button">Delete Stats</button>
                                             <?php
                                                 endif; ?>
                                             <?php
