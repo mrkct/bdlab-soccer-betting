@@ -64,6 +64,7 @@
                     read_param($_POST["gk_positioning"]),
                     read_param($_POST["gk_reflexes"])
                 );
+                $success = true;
             }catch(PermissionDeniedException $e){
                 $error = "You are not allowed to insert stats data";
             }catch(DuplicateDataException $e){
@@ -373,15 +374,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <?php 
-                                    if( isset($success) ){
-                                        create_message("Stats successfully added", MSG_SUCCESS);
-                                    }
-                                    if( isset($error) ){
-                                        create_message($error, MSG_ERROR);
-                                    }
-                                ?>
                             </div>
+                            <?php 
+                                if( isset($success) ){
+                                    create_message("Stats successfully added", MSG_SUCCESS);
+                                }
+                                if( isset($error) ){
+                                    create_message($error, MSG_ERROR);
+                                }
+                            ?>
                         </form>
                     <?php endif; ?>
                     <?php if( !$player ): ?>
