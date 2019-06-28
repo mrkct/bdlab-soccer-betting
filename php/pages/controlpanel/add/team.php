@@ -16,7 +16,7 @@
     if( isset($_POST['name']) && isset($_POST['shortname']) ){
         try{
             Team::prepare($db);
-            Team::insert($db, $_POST['id'], $_POST['name'], $_POST['shortname']);
+            Team::insert($db, isset($_POST['id']) && !empty($_POST['id'])? $_POST['id'] : NULL, $_POST['name'], $_POST['shortname']);
             $success = true;
         }catch(PermissionDeniedException $e){
             $error = "You are not allowed to insert team's data";
