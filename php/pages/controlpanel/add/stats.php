@@ -120,7 +120,7 @@
                                                 Left
                                             </label>
                                             <label class="radio">
-                                                <input type="radio" name="preferred_foot" value="right" />
+                                                <input type="radio" name="preferred_foot" value="right" checked />
                                                 Right
                                             </label>
                                         </div>
@@ -133,7 +133,7 @@
                                                 Low
                                             </label>
                                             <label class="radio">
-                                                <input type="radio" name="attacking_work_rate" value="medium" />
+                                                <input type="radio" name="attacking_work_rate" value="medium" checked />
                                                 Medium
                                             </label>
                                             <label class="radio">
@@ -150,7 +150,7 @@
                                                 Low
                                             </label>
                                             <label class="radio">
-                                                <input type="radio" name="defensive_work_rate" value="medium" />
+                                                <input type="radio" name="defensive_work_rate" value="medium" checked/>
                                                 Medium
                                             </label>
                                             <label class="radio">
