@@ -119,7 +119,7 @@ class League{
      * exception on failure.
      */
     public static function delete($db, $id){
-        $row = execute_query($db, 'League_delete', array($id));
+        $row = execute_query($db, 'League_delete', array(LoggedUser::getId(), $id));
         return League::rowToArray($row);
     }
 
