@@ -47,3 +47,15 @@
         }
         return true;
     }
+
+    /**
+     * This calls 'pg_fetch_all' on a query result and if 
+     * there are none it returns an empty array instead of 
+     * false, like a normal function would.
+     * @param result: A result item from a pg_query
+     * @return array of result
+     */
+    function pg_fetch_all_fixed($result){
+        $r = pg_fetch_all($result);
+        return $r ? $r : array();
+    }

@@ -90,11 +90,11 @@
                         'SELECT id FROM get_match_mvp($1, $2);'
                     );
                     $result = pg_execute($db, 'get_players', array($match["id"]));
-                    $players = pg_fetch_all($result);
+                    $players = pg_fetch_all_fixed($result);
                     $result = pg_execute($db, 'get_mvps', array($match["id"], $hometeam["id"]));
-                    $hometeam_mvps = pg_fetch_all($result);
+                    $hometeam_mvps = pg_fetch_all_fixed($result);
                     $result = pg_execute($db, 'get_mvps', array($match["id"], $awayteam["id"]));
-                    $awayteam_mvps = pg_fetch_all($result);
+                    $awayteam_mvps = pg_fetch_all_fixed($result);
 
                     for($i = 0; $i < sizeof($players); $i++){
                         if( $players[$i]["team"] == $hometeam["id"] ){
@@ -205,7 +205,7 @@
                          WHERE played.match = $2'
                     );
                     $result = pg_execute($db, 'get_stats', array($match["played_on"], $match["id"]));
-                    $stats = pg_fetch_all($result);
+                    $stats = pg_fetch_all_fixed($result);
                     for($i = 0; $i < sizeof($stats); $i++){
                         $search_in = &$hometeam_players;
                         if( $stats[$i]["team"] == $awayteam["id"] ){
@@ -219,6 +219,7 @@
                         }
                     }
                 ?>
+                
                 <table class="table is-striped is-bordered is-hoverable">
                     <thead>
                         <th><abbr title="Player's Name">Player's Name</abbr></th>
