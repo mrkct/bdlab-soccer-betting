@@ -29,7 +29,7 @@
         }
     }
 
-    if( isset($_POST["action"]) && isset($_POST["id"]) && isset($_POST["old_id"]) ){
+    if( isset($_POST["action"]) && isset($_POST["id"]) ){
         Player::prepare($db);
         if( $_POST["action"] == ACTION_DELETE ){
             try{
@@ -42,7 +42,7 @@
                 $error = "An unknown error occurred[" . $e->getMessage() . "]";
             }
             
-        } else if ( $_POST["action"] == ACTION_EDIT ){
+        } else if ( $_POST["action"] == ACTION_EDIT && isset($_POST["old_id"]) ){
             if( isset($_POST["name"]) && isset($_POST["birthday"]) && isset($_POST["height"]) && isset($_POST["weight"]) ){
                 try{
                     $player = Player::edit(
